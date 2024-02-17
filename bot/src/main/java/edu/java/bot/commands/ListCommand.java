@@ -1,24 +1,35 @@
 package edu.java.bot.commands;
 
+import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.LinkStorage;
+import edu.java.bot.storage.LinkStorage;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ListCommand implements Command {
 
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "Вывести список отслеживаемых ссылок";
+    private static final String NOT_STARTED = "Вы не зарегистрированы в системе!";
     private final LinkStorage storage;
 
+    @Autowired
     public ListCommand(LinkStorage linkStorage) {
         this.storage = linkStorage;
     }
 
     @Override
     public SendMessage execute(Update update) {
-        List<String> links = storage.get(update.message().chat().id());
+        Chat chat = update.message().chat();
+        if (!storage.contains(chat.id())) {
+            return new SendMessage(chat.id(), NOT_STARTED);
+        }
+
+        List<String> links = storage.get(chat.id());
         String result;
 
         if (links != null && !links.isEmpty()) {
@@ -30,11 +41,10 @@ public class ListCommand implements Command {
 
             result = message.toString();
         } else {
-            storage.addChat(update.message().chat().id());
             result = "У Вас нет отслеживаемых ссылок!";
         }
 
-        return new SendMessage(update.message().chat().id(), result)
+        return new SendMessage(chat.id(), result)
             .disableWebPagePreview(true)
             .parseMode(ParseMode.Markdown);
     }

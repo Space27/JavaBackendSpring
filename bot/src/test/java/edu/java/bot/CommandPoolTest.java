@@ -5,11 +5,19 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.commands.Command;
+import edu.java.bot.commands.HelpCommand;
+import edu.java.bot.commands.ListCommand;
+import edu.java.bot.commands.StartCommand;
+import edu.java.bot.commands.TrackCommand;
+import edu.java.bot.commands.UntrackCommand;
+import edu.java.bot.storage.LinkStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +25,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 class CommandPoolTest {
+
+    public static CommandPool standardPool(LinkStorage linkStorage) {
+        List<Command> tmpCommands = new ArrayList<>(List.of(
+            new StartCommand(linkStorage),
+            new TrackCommand(linkStorage),
+            new UntrackCommand(linkStorage),
+            new ListCommand(linkStorage),
+            new HelpCommand(List.of())
+        ));
+        HelpCommand helpCommand = (HelpCommand) tmpCommands.getLast();
+        helpCommand.setCommands(tmpCommands.stream()
+            .map(Command::botCommand)
+            .toList());
+
+        return new CommandPool(tmpCommands);
+    }
 
     private static Update generateUpdateWithIdAndContent(String content, Long id) {
         Update update = Mockito.mock(Update.class);
@@ -35,6 +59,7 @@ class CommandPoolTest {
         LinkStorage linkStorage = Mockito.mock(LinkStorage.class);
 
         Mockito.when(linkStorage.get(any())).thenReturn(links);
+        Mockito.when(linkStorage.contains(any())).thenReturn(links != null);
 
         return linkStorage;
     }
@@ -43,7 +68,7 @@ class CommandPoolTest {
     @ValueSource(strings = {"", " ", "track", "help", "/end", "/", "/ "})
     @DisplayName("Сообщения не содержат поддерживаемых команд")
     void process_shouldReturnSpecialMessageIfMessageHasNoCommand(String content) {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(Collections.emptyList()));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent(content, 0L);
 
         SendMessage result = commandPool.process(update);
@@ -57,7 +82,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/list с пустым списком")
     void process_shouldReturnSpecialMessageForListIfLinkListEmpty() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(Collections.emptyList()));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/list", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -73,7 +98,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/list с непустым списком")
     void process_shouldReturnMessageWithLinkListForNotEmptyList() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(List.of(
+        CommandPool commandPool = standardPool(generateStorageWithLinks(List.of(
             "first",
             "second"
         )));
@@ -92,7 +117,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/help")
     void process_shouldReturnCommandListForHelp() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(Collections.emptyList()));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/help", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -110,7 +135,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/start для незарегистрированного пользователя")
     void process_shouldReturnDefaultStartMessage() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(null));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(null));
         Update update = generateUpdateWithIdAndContent("/start", 0L);
         Mockito.when(update.message().chat().firstName()).thenReturn("name");
 
@@ -125,7 +150,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/start для зарегистрированного пользователя")
     void process_shouldReturnSpecialStartMessageForRegisteredUser() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(Collections.emptyList()));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/start", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -139,7 +164,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/track для корректной ссылки")
     void process_shouldReturnDefaultMessageForTrackingValidLink() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(null));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/track https://www.youtube.com/watch?v=4i2ifGa5n0o", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -155,7 +180,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/track для некорректной ссылки")
     void process_shouldReturnSpecialMessageForTrackingNotValidLink() {
-        CommandPool commandPool = CommandPool.standardPool(generateStorageWithLinks(null));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/track https://www.youtube.o/watch?v=4i2ifGa5n0o", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -171,7 +196,7 @@ class CommandPoolTest {
     @DisplayName("/untrack для ссылки в списке")
     void process_shouldReturnDefaultMessageForUntrackingTrackingLink() {
         CommandPool commandPool =
-            CommandPool.standardPool(generateStorageWithLinks(List.of("https://www.youtube.com/watch?v=4i2ifGa5n0o")));
+            standardPool(generateStorageWithLinks(List.of("https://www.youtube.com/watch?v=4i2ifGa5n0o")));
         Update update = generateUpdateWithIdAndContent("/untrack https://www.youtube.com/watch?v=4i2ifGa5n0o", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -187,8 +212,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/untrack для ссылки не списке")
     void process_shouldReturnSpecialMessageForUntrackingNotTrackingLink() {
-        CommandPool commandPool =
-            CommandPool.standardPool(generateStorageWithLinks(Collections.emptyList()));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/untrack https://www.youtube.com/watch?v=4i2ifGa5n0o", 0L);
 
         SendMessage result = commandPool.process(update);
@@ -204,8 +228,7 @@ class CommandPoolTest {
     @Test
     @DisplayName("/untrack для некорректной ссылки")
     void process_shouldReturnSpecialMessageForUntrackingNotValidLink() {
-        CommandPool commandPool =
-            CommandPool.standardPool(generateStorageWithLinks(Collections.emptyList()));
+        CommandPool commandPool = standardPool(generateStorageWithLinks(Collections.emptyList()));
         Update update = generateUpdateWithIdAndContent("/untrack https://www.youtube.om/watch?v=4i2ifGa5n0o", 0L);
 
         SendMessage result = commandPool.process(update);
