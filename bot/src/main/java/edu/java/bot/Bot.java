@@ -18,11 +18,11 @@ public class Bot implements IBot {
     private final CommandPool commandPool;
 
     @Autowired
-    public Bot(ApplicationConfig applicationConfig, CommandPool commandPool) {
-        this.commandPool = commandPool;
+    public Bot(ApplicationConfig applicationConfig, LinkStorage linkStorage) {
         bot = new TelegramBot(applicationConfig.telegramToken());
         bot.setUpdatesListener(this);
 
+        this.commandPool = CommandPool.standardPool(linkStorage);
         execute(new SetMyCommands(commandPool.getBotCommands().toArray(new BotCommand[0])));
     }
 

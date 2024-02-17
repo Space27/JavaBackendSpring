@@ -4,12 +4,9 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.storage.LinkStorage;
+import edu.java.bot.LinkStorage;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ListCommand implements Command {
 
     private static final String COMMAND = "/list";
@@ -17,7 +14,6 @@ public class ListCommand implements Command {
     private static final String NOT_STARTED = "Вы не зарегистрированы в системе!";
     private final LinkStorage storage;
 
-    @Autowired
     public ListCommand(LinkStorage linkStorage) {
         this.storage = linkStorage;
     }

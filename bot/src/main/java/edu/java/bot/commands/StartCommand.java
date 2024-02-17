@@ -3,18 +3,15 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.storage.LinkStorage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import edu.java.bot.LinkStorage;
 
-@Component
 public class StartCommand implements Command {
 
     private static final String COMMAND = "/start";
     private static final String DESCRIPTION = "Начать работу с ботом";
     private final LinkStorage storage;
 
-    @Autowired
+
     public StartCommand(LinkStorage linkStorage) {
         this.storage = linkStorage;
     }

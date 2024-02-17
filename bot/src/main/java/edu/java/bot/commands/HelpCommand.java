@@ -6,25 +6,39 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class HelpCommand implements Command {
 
     private static final String COMMAND = "/help";
     private static final String DESCRIPTION = "Вывести список команд";
     private List<BotCommand> commandList;
 
-    @Autowired
-    public HelpCommand(List<? extends Command> commands) {
+    public HelpCommand(List<Command> commands) {
         this.commandList = commands.stream()
             .map(Command::botCommand)
             .toList();
     }
 
-    public void setCommands(List<BotCommand> commandList) {
-        this.commandList = commandList;
+    public void setCommands(List<Command> commands) {
+        this.commandList = commands.stream()
+            .map(Command::botCommand)
+            .toList();
+    }
+
+    public void addCommand(Command command) {
+        if (command == null) {
+            return;
+        }
+
+        addCommand(command.botCommand());
+    }
+
+    public void addCommand(BotCommand command) {
+        if (command == null) {
+            return;
+        }
+
+        commandList.add(command);
     }
 
     @Override

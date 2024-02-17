@@ -1,4 +1,4 @@
-package edu.java.bot.storage;
+package edu.java.bot;
 
 import java.util.ArrayList;
 import java.util.HashMap;

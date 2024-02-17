@@ -3,13 +3,10 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.LinkStorage;
 import edu.java.bot.MessageParser;
-import edu.java.bot.storage.LinkStorage;
 import java.net.URI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class UntrackCommand implements Command {
 
     private static final String COMMAND = "/untrack";
@@ -17,7 +14,6 @@ public class UntrackCommand implements Command {
     private static final String NOT_STARTED = "Вы не зарегистрированы в системе!";
     private final LinkStorage storage;
 
-    @Autowired
     public UntrackCommand(LinkStorage linkStorage) {
         this.storage = linkStorage;
     }
