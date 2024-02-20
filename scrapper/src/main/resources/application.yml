@@ -4,6 +4,11 @@ app:
     interval: 10s
     force-check-delay: 10s
 
+  github:
+    baseurl: https://api.github.com/
+  stackoverflow:
+    baseurl: https://api.stackexchange.com/2.3
+
 spring:
   application:
     name: scrapper
