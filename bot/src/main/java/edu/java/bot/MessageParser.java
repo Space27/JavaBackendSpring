@@ -5,30 +5,31 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 public final class MessageParser {
 
     private MessageParser() {
     }
 
-    public static String getCommand(Message message) {
+    public static Optional<String> getCommand(Message message) {
         if (message == null || message.text() == null) {
-            return null;
+            return Optional.empty();
         }
 
         String string = message.text();
         String command = string.split(" ", 2)[0];
 
         if (command != null && !command.isEmpty() && command.length() > 1 && command.charAt(0) == '/') {
-            return command;
+            return Optional.of(command);
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static URI getURI(Message message) {
+    public static Optional<URI> getURI(Message message) {
         if (message == null || message.text() == null) {
-            return null;
+            return Optional.empty();
         }
 
         String string = message.text();
@@ -38,27 +39,33 @@ public final class MessageParser {
             for (String strURI : splitString) {
                 if (checkURI(strURI)) {
                     try {
-                        return new URI(strURI);
-                    } catch (URISyntaxException ignored) {
+                        return Optional.of(new URI(strURI));
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
-            return null;
+            return Optional.empty();
         }
-        return null;
+        return Optional.empty();
     }
 
     private static boolean checkURI(String strURI) {
+        HttpURLConnection huc = null;
+
         try {
             URI uri = new URI(strURI);
 
-            HttpURLConnection huc = (HttpURLConnection) uri.toURL().openConnection();
+            huc = (HttpURLConnection) uri.toURL().openConnection();
             int responseCode = huc.getResponseCode();
-            huc.disconnect();
 
             return responseCode == HttpURLConnection.HTTP_OK;
         } catch (URISyntaxException | IllegalArgumentException | IOException e) {
             return false;
+        } finally {
+            if (huc != null) {
+                huc.disconnect();
+            }
         }
     }
 }

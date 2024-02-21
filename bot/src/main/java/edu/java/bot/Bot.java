@@ -8,7 +8,6 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import edu.java.bot.configuration.ApplicationConfig;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +16,6 @@ public class Bot implements IBot {
     private final TelegramBot bot;
     private final CommandPool commandPool;
 
-    @Autowired
     public Bot(ApplicationConfig applicationConfig, LinkStorage linkStorage) {
         bot = new TelegramBot(applicationConfig.telegramToken());
         bot.setUpdatesListener(this);

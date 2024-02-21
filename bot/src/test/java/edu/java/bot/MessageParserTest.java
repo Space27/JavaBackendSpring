@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import java.net.URI;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageParserTest {
@@ -17,10 +18,10 @@ class MessageParserTest {
     @NullSource
     @DisplayName("Команда от Null")
     void getCommand_shouldReturnNullForNullMessage(Message message) {
-        String command = MessageParser.getCommand(message);
+        Optional<String> command = MessageParser.getCommand(message);
 
         assertThat(command)
-            .isNull();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -30,10 +31,10 @@ class MessageParserTest {
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.text()).thenReturn(content);
 
-        String command = MessageParser.getCommand(message);
+        Optional<String> command = MessageParser.getCommand(message);
 
         assertThat(command)
-            .isNull();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -43,10 +44,10 @@ class MessageParserTest {
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.text()).thenReturn(content);
 
-        String command = MessageParser.getCommand(message);
+        Optional<String> command = MessageParser.getCommand(message);
 
         assertThat(command)
-            .isNull();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -56,20 +57,21 @@ class MessageParserTest {
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.text()).thenReturn(content);
 
-        String command = MessageParser.getCommand(message);
+        Optional<String> command = MessageParser.getCommand(message);
 
         assertThat(command)
-            .isEqualTo(answer);
+            .isPresent()
+            .isEqualTo(Optional.of(answer));
     }
 
     @ParameterizedTest
     @NullSource
     @DisplayName("Адрес от Null")
     void getURI_shouldReturnNullForNullMessage(Message message) {
-        URI uri = MessageParser.getURI(message);
+        Optional<URI> uri = MessageParser.getURI(message);
 
         assertThat(uri)
-            .isNull();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -79,10 +81,10 @@ class MessageParserTest {
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.text()).thenReturn(content);
 
-        URI uri = MessageParser.getURI(message);
+        Optional<URI> uri = MessageParser.getURI(message);
 
         assertThat(uri)
-            .isNull();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -92,10 +94,10 @@ class MessageParserTest {
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.text()).thenReturn(content);
 
-        URI uri = MessageParser.getURI(message);
+        Optional<URI> uri = MessageParser.getURI(message);
 
         assertThat(uri)
-            .isNull();
+            .isEmpty();
     }
 
     @ParameterizedTest
@@ -105,9 +107,9 @@ class MessageParserTest {
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.text()).thenReturn(content);
 
-        URI uri = MessageParser.getURI(message);
+        Optional<URI> uri = MessageParser.getURI(message);
 
         assertThat(uri)
-            .isNotNull();
+            .isPresent();
     }
 }

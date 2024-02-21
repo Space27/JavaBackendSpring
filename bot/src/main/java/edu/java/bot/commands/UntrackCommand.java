@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.LinkStorage;
 import edu.java.bot.MessageParser;
 import java.net.URI;
+import java.util.Optional;
 
 public class UntrackCommand implements Command {
 
@@ -26,12 +27,12 @@ public class UntrackCommand implements Command {
         }
 
         String result;
-        URI uri = MessageParser.getURI(update.message());
+        Optional<URI> uri = MessageParser.getURI(update.message());
 
-        if (uri != null) {
-            if (storage.get(chat.id()).contains(uri.toString())) {
-                storage.remove(chat.id(), uri.toString());
-                result = String.format("Прекращено отслеживание ссылки %s", uri);
+        if (uri.isPresent()) {
+            if (storage.get(chat.id()).contains(uri.get().toString())) {
+                storage.remove(chat.id(), uri.get().toString());
+                result = String.format("Прекращено отслеживание ссылки %s", uri.get());
             } else {
                 result = "Данная ссылка не отслеживается!";
             }

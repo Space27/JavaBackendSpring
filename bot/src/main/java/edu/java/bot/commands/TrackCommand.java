@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.LinkStorage;
 import edu.java.bot.MessageParser;
 import java.net.URI;
+import java.util.Optional;
 
 public class TrackCommand implements Command {
 
@@ -26,11 +27,11 @@ public class TrackCommand implements Command {
         }
 
         String result;
-        URI uri = MessageParser.getURI(update.message());
+        Optional<URI> uri = MessageParser.getURI(update.message());
 
-        if (uri != null) {
-            storage.add(chat.id(), uri.toString());
-            result = String.format("Начато отслеживание ссылки %s", uri);
+        if (uri.isPresent()) {
+            storage.add(chat.id(), uri.get().toString());
+            result = String.format("Начато отслеживание ссылки %s", uri.get());
         } else {
             result = "Ссылка введена в неправильном формате!";
         }
