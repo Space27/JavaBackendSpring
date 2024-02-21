@@ -1,6 +1,7 @@
 package edu.java.bot;
 
 import com.pengrad.telegrambot.model.Message;
+import edu.java.bot.util.MessageParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

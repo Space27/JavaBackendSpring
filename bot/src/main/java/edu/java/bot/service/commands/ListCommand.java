@@ -1,10 +1,10 @@
-package edu.java.bot.commands;
+package edu.java.bot.service.commands;
 
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.LinkStorage;
+import edu.java.bot.repository.LinkStorage;
 import java.util.List;
 
 public class ListCommand implements Command {

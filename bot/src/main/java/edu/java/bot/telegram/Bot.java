@@ -1,4 +1,4 @@
-package edu.java.bot;
+package edu.java.bot.telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.BotCommand;
@@ -6,8 +6,11 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
+import edu.java.bot.service.CommandPool;
 import edu.java.bot.configuration.ApplicationConfig;
 import java.util.List;
+import edu.java.bot.repository.LinkStorage;
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,6 +45,7 @@ public class Bot implements IBot {
     }
 
     @Override
+    @PreDestroy
     public void close() {
         bot.shutdown();
     }

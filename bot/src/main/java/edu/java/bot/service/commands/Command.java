@@ -1,9 +1,9 @@
-package edu.java.bot.commands;
+package edu.java.bot.service.commands;
 
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.MessageParser;
+import edu.java.bot.util.MessageParser;
 import java.util.Optional;
 
 public interface Command {

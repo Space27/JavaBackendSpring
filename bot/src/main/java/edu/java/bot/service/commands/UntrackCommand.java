@@ -1,10 +1,10 @@
-package edu.java.bot.commands;
+package edu.java.bot.service.commands;
 
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.LinkStorage;
-import edu.java.bot.MessageParser;
+import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.util.MessageParser;
 import java.net.URI;
 import java.util.Optional;
 
