@@ -1,12 +1,12 @@
 package edu.java.bot.util;
 
 import com.pengrad.telegrambot.model.Message;
-import lombok.experimental.UtilityClass;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class MessageParser {

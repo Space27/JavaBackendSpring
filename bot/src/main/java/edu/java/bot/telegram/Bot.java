@@ -6,11 +6,11 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
-import edu.java.bot.service.CommandPool;
 import edu.java.bot.configuration.ApplicationConfig;
-import java.util.List;
 import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.service.CommandPool;
 import jakarta.annotation.PreDestroy;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
