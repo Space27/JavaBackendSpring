@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class MessageParser {
 
-    public static Optional<String> getCommand(Message message) {
+    public Optional<String> getCommand(Message message) {
         if (message == null || message.text() == null) {
             return Optional.empty();
         }
@@ -26,7 +26,7 @@ public final class MessageParser {
         }
     }
 
-    public static Optional<URI> getURI(Message message) {
+    public Optional<URI> getURI(Message message) {
         if (message == null || message.text() == null) {
             return Optional.empty();
         }
@@ -39,8 +39,7 @@ public final class MessageParser {
                 if (checkURI(strURI)) {
                     try {
                         return Optional.of(new URI(strURI));
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException(e);
+                    } catch (URISyntaxException ignored) {
                     }
                 }
             }
@@ -49,7 +48,7 @@ public final class MessageParser {
         return Optional.empty();
     }
 
-    private static boolean checkURI(String strURI) {
+    private boolean checkURI(String strURI) {
         HttpURLConnection huc = null;
 
         try {

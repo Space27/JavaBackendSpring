@@ -9,7 +9,6 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.repository.LinkStorage;
 import edu.java.bot.service.CommandPool;
-import jakarta.annotation.PreDestroy;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,6 @@ public class Bot implements IBot {
     }
 
     @Override
-    @PreDestroy
     public void close() {
         bot.shutdown();
     }
