@@ -1,6 +1,9 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
 
+  scrapper:
+    baseurl: http://localhost:8080
+
 spring:
   application:
     name: bot
@@ -12,3 +15,14 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: '/api-docs'
+  swagger-ui:
+    path: '/swagger-ui'
+    configUrl: '/api-docs/swagger-config'
+    urls:
+      - name: My Custom API
+        url: '/api-docs'

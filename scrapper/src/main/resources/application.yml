@@ -13,3 +13,14 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: '/api-docs'
+  swagger-ui:
+    path: '/swagger-ui'
+    configUrl: '/api-docs/swagger-config'
+    urls:
+      - name: My Custom API
+        url: '/api-docs'

@@ -1,8 +1,6 @@
 package edu.java.bot.util;
 
 import com.pengrad.telegrambot.model.Message;
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -36,7 +34,7 @@ public final class MessageParser {
 
         if (splitString.length >= 1) {
             for (String strURI : splitString) {
-                if (checkURI(strURI)) {
+                if (Link.checkURI(strURI)) {
                     try {
                         return Optional.of(new URI(strURI));
                     } catch (URISyntaxException ignored) {
@@ -46,24 +44,5 @@ public final class MessageParser {
             return Optional.empty();
         }
         return Optional.empty();
-    }
-
-    private boolean checkURI(String strURI) {
-        HttpURLConnection huc = null;
-
-        try {
-            URI uri = new URI(strURI);
-
-            huc = (HttpURLConnection) uri.toURL().openConnection();
-            int responseCode = huc.getResponseCode();
-
-            return responseCode == HttpURLConnection.HTTP_OK;
-        } catch (URISyntaxException | IllegalArgumentException | IOException e) {
-            return false;
-        } finally {
-            if (huc != null) {
-                huc.disconnect();
-            }
-        }
     }
 }
