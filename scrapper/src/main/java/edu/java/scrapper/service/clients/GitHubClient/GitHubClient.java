@@ -1,4 +1,4 @@
-package edu.java.GitHubClient;
+package edu.java.scrapper.service.clients.GitHubClient;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;

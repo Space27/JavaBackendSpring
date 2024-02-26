@@ -1,4 +1,4 @@
-package edu.java.StackOverflowClient;
+package edu.java.scrapper.service.clients.StackOverflowClient;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;

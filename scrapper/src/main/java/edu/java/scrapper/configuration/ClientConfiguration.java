@@ -1,7 +1,8 @@
-package edu.java.configuration;
+package edu.java.scrapper.configuration;
 
-import edu.java.GitHubClient.GitHubClient;
-import edu.java.StackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.service.clients.GitHubClient.GitHubClient;
+import edu.java.scrapper.service.clients.StackOverflowClient.StackOverflowClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,8 +13,8 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class ClientConfiguration {
 
     @Bean
-    public GitHubClient gitHubClient(ApplicationConfig applicationConfig) {
-        WebClient webClient = WebClient.builder().baseUrl(applicationConfig.github().baseURL()).build();
+    public GitHubClient gitHubClient(@Value("${api.github.baseurl}") String baseURL) {
+        WebClient webClient = WebClient.builder().baseUrl(baseURL).build();
         WebClientAdapter adapter = WebClientAdapter.create(webClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 
@@ -21,8 +22,8 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public StackOverflowClient stackOverflowClient(ApplicationConfig applicationConfig) {
-        WebClient webClient = WebClient.builder().baseUrl(applicationConfig.stackOverflow().baseURL()).build();
+    public StackOverflowClient stackOverflowClient(@Value("${api.stackoverflow.baseurl}") String baseURL) {
+        WebClient webClient = WebClient.builder().baseUrl(baseURL).build();
         WebClientAdapter adapter = WebClientAdapter.create(webClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 

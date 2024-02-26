@@ -4,6 +4,7 @@ app:
     interval: 10s
     force-check-delay: 10s
 
+api:
   github:
     baseurl: https://api.github.com/
   stackoverflow:

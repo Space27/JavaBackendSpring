@@ -2,10 +2,9 @@ package edu.java.scrapper;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.StackOverflowClient.QuestionResponse;
-import edu.java.StackOverflowClient.StackOverflowClient;
-import edu.java.configuration.ApplicationConfig;
-import edu.java.configuration.ClientConfiguration;
+import edu.java.scrapper.service.clients.StackOverflowClient.QuestionResponse;
+import edu.java.scrapper.service.clients.StackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.configuration.ClientConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,11 +25,9 @@ class StackOverflowClientTest {
 
     @BeforeEach
     void init(WireMockRuntimeInfo wm) {
-        ApplicationConfig applicationConfig =
-            new ApplicationConfig(null, null, new ApplicationConfig.StackOverflow(wm.getHttpBaseUrl()));
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.stackOverflowClient(applicationConfig);
+        client = clientConfiguration.stackOverflowClient(wm.getHttpBaseUrl());
     }
 
     @Test

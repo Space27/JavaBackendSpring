@@ -1,4 +1,4 @@
-package edu.java.configuration;
+package edu.java.scrapper.configuration;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
@@ -11,20 +11,8 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotNull
     @Bean
-    Scheduler scheduler,
-
-    @NotNull
-    Github github,
-
-    @NotNull
-    StackOverflow stackOverflow
+    Scheduler scheduler
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
-    }
-
-    public record Github(@NotNull String baseURL) {
-    }
-
-    public record StackOverflow(@NotNull String baseURL) {
     }
 }

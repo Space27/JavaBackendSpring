@@ -2,10 +2,9 @@ package edu.java.scrapper;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.GitHubClient.GitHubClient;
-import edu.java.GitHubClient.RepositoryResponse;
-import edu.java.configuration.ApplicationConfig;
-import edu.java.configuration.ClientConfiguration;
+import edu.java.scrapper.service.clients.GitHubClient.GitHubClient;
+import edu.java.scrapper.service.clients.GitHubClient.RepositoryResponse;
+import edu.java.scrapper.configuration.ClientConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +22,9 @@ class GitHubClientTest {
 
     @BeforeEach
     void init(WireMockRuntimeInfo wm) {
-        ApplicationConfig applicationConfig =
-            new ApplicationConfig(null, new ApplicationConfig.Github(wm.getHttpBaseUrl()), null);
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.gitHubClient(applicationConfig);
+        client = clientConfiguration.gitHubClient(wm.getHttpBaseUrl());
     }
 
     @Test
