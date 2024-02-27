@@ -1,9 +1,7 @@
-package edu.java.scrapper;
+package edu.java.scrapper.service.clients.GitHubClient;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.scrapper.service.clients.GitHubClient.GitHubClient;
-import edu.java.scrapper.service.clients.GitHubClient.RepositoryResponse;
 import edu.java.scrapper.configuration.ClientConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
