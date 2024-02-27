@@ -1,9 +1,9 @@
-package edu.java.scrapper.api.controllers;
+package edu.java.scrapper.service.api.controllers;
 
-import edu.java.scrapper.api.controllers.exceptions.ChatAlreadyExistsException;
-import edu.java.scrapper.api.controllers.exceptions.ChatNotFoundException;
-import edu.java.scrapper.api.schemas.ApiErrorResponse;
 import edu.java.scrapper.repository.LinkStorage;
+import edu.java.scrapper.service.api.controllers.exceptions.ChatAlreadyExistsException;
+import edu.java.scrapper.service.api.controllers.exceptions.ChatNotFoundException;
+import edu.java.scrapper.service.api.schemas.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

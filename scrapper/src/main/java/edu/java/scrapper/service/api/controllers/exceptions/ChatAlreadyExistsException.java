@@ -1,4 +1,4 @@
-package edu.java.scrapper.api.controllers.exceptions;
+package edu.java.scrapper.service.api.controllers.exceptions;
 
 public class ChatAlreadyExistsException extends RuntimeException {
 

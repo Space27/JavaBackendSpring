@@ -1,4 +1,4 @@
-package edu.java.bot.service.api.schemas;
+package edu.java.scrapper.service.api.schemas;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;

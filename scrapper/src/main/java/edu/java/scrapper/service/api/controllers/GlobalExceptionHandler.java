@@ -1,11 +1,11 @@
-package edu.java.scrapper.api.controllers;
+package edu.java.scrapper.service.api.controllers;
 
-import edu.java.scrapper.api.controllers.exceptions.ChatAlreadyExistsException;
-import edu.java.scrapper.api.controllers.exceptions.ChatNotExistsException;
-import edu.java.scrapper.api.controllers.exceptions.ChatNotFoundException;
-import edu.java.scrapper.api.controllers.exceptions.LinkAlreadyExistsException;
-import edu.java.scrapper.api.controllers.exceptions.LinkNotFoundException;
-import edu.java.scrapper.api.schemas.ApiErrorResponse;
+import edu.java.scrapper.service.api.controllers.exceptions.ChatAlreadyExistsException;
+import edu.java.scrapper.service.api.controllers.exceptions.ChatNotExistsException;
+import edu.java.scrapper.service.api.controllers.exceptions.ChatNotFoundException;
+import edu.java.scrapper.service.api.controllers.exceptions.LinkAlreadyExistsException;
+import edu.java.scrapper.service.api.controllers.exceptions.LinkNotFoundException;
+import edu.java.scrapper.service.api.schemas.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;

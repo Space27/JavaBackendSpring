@@ -1,6 +1,6 @@
 package edu.java.scrapper;
 
-import edu.java.scrapper.api.controllers.ChatController;
+import edu.java.scrapper.service.api.controllers.ChatController;
 import edu.java.scrapper.repository.LinkStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

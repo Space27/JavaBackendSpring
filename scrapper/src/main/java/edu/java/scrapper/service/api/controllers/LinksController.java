@@ -1,14 +1,14 @@
-package edu.java.scrapper.api.controllers;
+package edu.java.scrapper.service.api.controllers;
 
-import edu.java.scrapper.api.controllers.exceptions.ChatNotExistsException;
-import edu.java.scrapper.api.controllers.exceptions.LinkAlreadyExistsException;
-import edu.java.scrapper.api.controllers.exceptions.LinkNotFoundException;
-import edu.java.scrapper.api.schemas.AddLinkRequest;
-import edu.java.scrapper.api.schemas.ApiErrorResponse;
-import edu.java.scrapper.api.schemas.LinkResponse;
-import edu.java.scrapper.api.schemas.ListLinkResponse;
-import edu.java.scrapper.api.schemas.RemoveLinkRequest;
 import edu.java.scrapper.repository.LinkStorage;
+import edu.java.scrapper.service.api.controllers.exceptions.ChatNotExistsException;
+import edu.java.scrapper.service.api.controllers.exceptions.LinkAlreadyExistsException;
+import edu.java.scrapper.service.api.controllers.exceptions.LinkNotFoundException;
+import edu.java.scrapper.service.api.schemas.AddLinkRequest;
+import edu.java.scrapper.service.api.schemas.ApiErrorResponse;
+import edu.java.scrapper.service.api.schemas.LinkResponse;
+import edu.java.scrapper.service.api.schemas.ListLinkResponse;
+import edu.java.scrapper.service.api.schemas.RemoveLinkRequest;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

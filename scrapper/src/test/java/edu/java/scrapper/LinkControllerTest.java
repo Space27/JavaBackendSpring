@@ -1,8 +1,8 @@
 package edu.java.scrapper;
 
-import edu.java.scrapper.api.controllers.LinksController;
-import edu.java.scrapper.api.schemas.AddLinkRequest;
-import edu.java.scrapper.api.schemas.RemoveLinkRequest;
+import edu.java.scrapper.service.api.controllers.LinksController;
+import edu.java.scrapper.service.api.schemas.AddLinkRequest;
+import edu.java.scrapper.service.api.schemas.RemoveLinkRequest;
 import edu.java.scrapper.repository.LinkStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

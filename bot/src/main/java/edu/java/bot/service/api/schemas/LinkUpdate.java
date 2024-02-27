@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
 
-public record LinkUpdate(@JsonProperty("id") @NotNull @Positive Long id,
-                         @JsonProperty("url") @NotNull @IsURI URI url,
-                         @JsonProperty("description") @NotNull @NotBlank String description,
-                         @JsonProperty("tgChatIds") @NotNull @NotEmpty List<@Positive Long> tgChatIds) {
+public record LinkUpdate(@JsonProperty @NotNull @Positive Long id,
+                         @JsonProperty @NotNull @IsURI URI url,
+                         @JsonProperty @NotNull @NotBlank String description,
+                         @JsonProperty @NotNull @NotEmpty List<@Positive Long> tgChatIds) {
 }

@@ -4,6 +4,10 @@ app:
     interval: 10s
     force-check-delay: 10s
 
+api:
+  bot:
+    baseurl: http://localhost:8090
+
 spring:
   application:
     name: scrapper

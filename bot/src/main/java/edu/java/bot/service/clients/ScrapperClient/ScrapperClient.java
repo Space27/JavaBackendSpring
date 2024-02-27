@@ -1,7 +1,7 @@
-package edu.java.bot.service.scrapperClient;
+package edu.java.bot.service.clients.ScrapperClient;
 
-import edu.java.bot.service.scrapperClient.schemas.LinkResponse;
-import edu.java.bot.service.scrapperClient.schemas.ListLinkResponse;
+import edu.java.bot.service.clients.ScrapperClient.schemas.LinkResponse;
+import edu.java.bot.service.clients.ScrapperClient.schemas.ListLinkResponse;
 import java.net.URI;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
