@@ -1,11 +1,9 @@
-package edu.java.scrapper;
+package edu.java.scrapper.service.clients.BotClient;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.configuration.ClientConfiguration;
 import edu.java.scrapper.service.api.schemas.ApiErrorResponse;
-import edu.java.scrapper.service.clients.BotClient.BotClient;
-import edu.java.scrapper.service.clients.BotClient.ResponseErrorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

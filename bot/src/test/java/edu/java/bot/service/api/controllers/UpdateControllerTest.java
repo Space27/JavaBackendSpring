@@ -1,6 +1,5 @@
-package edu.java.bot;
+package edu.java.bot.service.api.controllers;
 
-import edu.java.bot.service.api.controllers.UpdateController;
 import edu.java.bot.service.api.schemas.LinkUpdate;
 import edu.java.bot.telegram.IBot;
 import org.junit.jupiter.api.DisplayName;

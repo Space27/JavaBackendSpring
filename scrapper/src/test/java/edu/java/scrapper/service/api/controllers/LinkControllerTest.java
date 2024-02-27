@@ -1,6 +1,5 @@
-package edu.java.scrapper;
+package edu.java.scrapper.service.api.controllers;
 
-import edu.java.scrapper.service.api.controllers.LinksController;
 import edu.java.scrapper.service.api.schemas.AddLinkRequest;
 import edu.java.scrapper.service.api.schemas.RemoveLinkRequest;
 import edu.java.scrapper.repository.LinkStorage;
