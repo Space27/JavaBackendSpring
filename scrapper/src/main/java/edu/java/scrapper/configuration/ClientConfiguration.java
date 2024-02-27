@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.scrapper.service.api.schemas.ApiErrorResponse;
 import edu.java.scrapper.service.clients.BotClient.BotClient;
 import edu.java.scrapper.service.clients.BotClient.ResponseErrorException;
+import edu.java.scrapper.service.clients.GitHubClient.GitHubClient;
+import edu.java.scrapper.service.clients.StackOverflowClient.StackOverflowClient;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +15,14 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ReactorNettyClientRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 @Slf4j
 public class ClientConfiguration {
-
+  
     @Bean
     public BotClient botClient(@Value("${api.bot.baseurl}") String baseURL) {
         RestClient restClient = RestClient.builder()
@@ -39,5 +43,23 @@ public class ClientConfiguration {
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 
         return factory.createClient(BotClient.class);
+    }
+
+    @Bean
+    public GitHubClient gitHubClient(@Value("${api.github.baseurl}") String baseURL) {
+        WebClient webClient = WebClient.builder().baseUrl(baseURL).build();
+        WebClientAdapter adapter = WebClientAdapter.create(webClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+
+        return factory.createClient(GitHubClient.class);
+    }
+
+    @Bean
+    public StackOverflowClient stackOverflowClient(@Value("${api.stackoverflow.baseurl}") String baseURL) {
+        WebClient webClient = WebClient.builder().baseUrl(baseURL).build();
+        WebClientAdapter adapter = WebClientAdapter.create(webClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+
+        return factory.createClient(StackOverflowClient.class);
     }
 }
