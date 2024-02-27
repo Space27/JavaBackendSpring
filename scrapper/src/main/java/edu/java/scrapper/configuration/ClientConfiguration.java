@@ -22,7 +22,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 @Slf4j
 public class ClientConfiguration {
-  
+
     @Bean
     public BotClient botClient(@Value("${api.bot.baseurl}") String baseURL) {
         RestClient restClient = RestClient.builder()
