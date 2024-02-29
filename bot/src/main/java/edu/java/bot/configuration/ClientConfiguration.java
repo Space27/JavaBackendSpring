@@ -1,9 +1,9 @@
 package edu.java.bot.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.bot.service.api.schemas.ApiErrorResponse;
-import edu.java.bot.service.clients.ScrapperClient.ResponseErrorException;
-import edu.java.bot.service.clients.ScrapperClient.ScrapperClient;
+import edu.java.bot.service.api.controller.response.ApiErrorResponse;
+import edu.java.bot.service.client.scrapperClient.ResponseErrorException;
+import edu.java.bot.service.client.scrapperClient.ScrapperClient;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class ClientConfiguration {
                         objectMapper.readValue(response.getBody(), ApiErrorResponse.class);
                     throw new ResponseErrorException(apiErrorResponse);
                 } catch (IOException e) {
-                    log.warn("Get incorrect error response {}\nException {}", response, e);
+                    log.error("Get incorrect error response {}\nException {}", response, e);
                     throw new ResponseErrorException(null);
                 }
             }).baseUrl(baseURL).build();

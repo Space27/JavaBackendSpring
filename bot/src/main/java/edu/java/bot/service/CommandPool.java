@@ -4,12 +4,12 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.repository.LinkStorage;
-import edu.java.bot.service.commands.Command;
-import edu.java.bot.service.commands.HelpCommand;
-import edu.java.bot.service.commands.ListCommand;
-import edu.java.bot.service.commands.StartCommand;
-import edu.java.bot.service.commands.TrackCommand;
-import edu.java.bot.service.commands.UntrackCommand;
+import edu.java.bot.service.command.Command;
+import edu.java.bot.service.command.HelpCommand;
+import edu.java.bot.service.command.ListCommand;
+import edu.java.bot.service.command.StartCommand;
+import edu.java.bot.service.command.TrackCommand;
+import edu.java.bot.service.command.UntrackCommand;
 import java.util.ArrayList;
 import java.util.List;
 

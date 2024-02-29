@@ -1,11 +1,11 @@
 package edu.java.scrapper.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.scrapper.service.api.schemas.ApiErrorResponse;
-import edu.java.scrapper.service.clients.BotClient.BotClient;
-import edu.java.scrapper.service.clients.BotClient.ResponseErrorException;
-import edu.java.scrapper.service.clients.GitHubClient.GitHubClient;
-import edu.java.scrapper.service.clients.StackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.service.api.controller.response.ApiErrorResponse;
+import edu.java.scrapper.service.client.botClient.BotClient;
+import edu.java.scrapper.service.client.botClient.ResponseErrorException;
+import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
+import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class ClientConfiguration {
                         objectMapper.readValue(response.getBody(), ApiErrorResponse.class);
                     throw new ResponseErrorException(apiErrorResponse);
                 } catch (IOException e) {
-                    log.warn("Get incorrect error response {}\nException {}", response, e);
+                    log.error("Get incorrect error response {}\nException {}", response, e);
                     throw new ResponseErrorException(null);
                 }
             }).baseUrl(baseURL).build();

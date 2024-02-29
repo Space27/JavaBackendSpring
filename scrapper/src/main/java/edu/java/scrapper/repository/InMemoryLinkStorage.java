@@ -9,32 +9,52 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InMemoryLinkStorage implements LinkStorage {
 
-    private final Map<Long, List<String>> userLinks;
+    private final Map<Long, List<Link>> userLinks;
+    private final Map<String, Long> links;
 
     public InMemoryLinkStorage() {
         userLinks = new HashMap<>();
+        links = new HashMap<>();
     }
 
     @Override
-    public boolean add(Long chatID, String link) {
+    public Long add(Long chatID, String link) {
         if (contains(chatID)) {
-            if (!userLinks.get(chatID).contains(link)) {
-                userLinks.get(chatID).add(link);
-                return true;
+            Link tmpLink;
+
+            if (links.containsKey(link)) {
+                tmpLink = new Link(links.get(link), link);
+            } else {
+                Long id = links.values().stream()
+                    .mapToLong(Long::longValue)
+                    .max()
+                    .orElse(0L) + 1;
+
+                tmpLink = new Link(id, link);
+                links.put(tmpLink.link(), tmpLink.id());
             }
-        } else {
-            userLinks.put(chatID, new ArrayList<>(List.of(link)));
+
+            if (!userLinks.get(chatID).contains(tmpLink)) {
+                userLinks.get(chatID).add(tmpLink);
+                return tmpLink.id();
+            }
         }
-        return false;
+        return null;
     }
 
     @Override
-    public boolean remove(Long chatID, String link) {
-        if (contains(chatID) && userLinks.get(chatID).contains(link)) {
-            userLinks.get(chatID).remove(link);
-            return true;
+    public Long remove(Long chatID, String link) {
+        Link tmpLink = null;
+
+        if (links.containsKey(link)) {
+            tmpLink = new Link(links.get(link), link);
         }
-        return false;
+
+        if (tmpLink != null && contains(chatID) && userLinks.get(chatID).contains(tmpLink)) {
+            userLinks.get(chatID).remove(tmpLink);
+            return tmpLink.id();
+        }
+        return null;
     }
 
     @Override
@@ -56,7 +76,7 @@ public class InMemoryLinkStorage implements LinkStorage {
     }
 
     @Override
-    public List<String> get(Long chatID) {
+    public List<Link> get(Long chatID) {
         return userLinks.get(chatID);
     }
 
