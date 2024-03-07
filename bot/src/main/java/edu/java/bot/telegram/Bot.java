@@ -7,7 +7,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import edu.java.bot.configuration.ApplicationConfig;
-import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.repository.LinkRepository;
 import edu.java.bot.service.CommandPool;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ public class Bot implements IBot {
     private final TelegramBot bot;
     private final CommandPool commandPool;
 
-    public Bot(ApplicationConfig applicationConfig, LinkStorage linkStorage) {
+    public Bot(ApplicationConfig applicationConfig, LinkRepository linkRepository) {
         bot = new TelegramBot(applicationConfig.telegramToken());
         bot.setUpdatesListener(this);
 
-        this.commandPool = CommandPool.standardPool(linkStorage);
+        this.commandPool = CommandPool.standardPool(linkRepository);
         execute(new SetMyCommands(commandPool.getBotCommands().toArray(new BotCommand[0])));
     }
 

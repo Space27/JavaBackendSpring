@@ -1,7 +1,7 @@
 package edu.java.scrapper.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.scrapper.service.api.controller.response.ApiErrorResponse;
+import edu.java.scrapper.controller.response.ApiErrorResponse;
 import edu.java.scrapper.service.client.botClient.BotClient;
 import edu.java.scrapper.service.client.botClient.ResponseErrorException;
 import edu.java.scrapper.service.client.gitHubClient.GitHubClient;

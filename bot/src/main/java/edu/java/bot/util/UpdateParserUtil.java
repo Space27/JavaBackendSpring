@@ -2,7 +2,7 @@ package edu.java.bot.util;
 
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.api.controller.request.LinkUpdateRequest;
+import edu.java.bot.controller.request.LinkUpdateRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;

@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.repository.LinkRepository;
 import java.util.List;
 
 public class ListCommand implements Command {
@@ -12,10 +12,10 @@ public class ListCommand implements Command {
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "Вывести список отслеживаемых ссылок";
     private static final String NOT_STARTED = "Вы не зарегистрированы в системе!";
-    private final LinkStorage storage;
+    private final LinkRepository storage;
 
-    public ListCommand(LinkStorage linkStorage) {
-        this.storage = linkStorage;
+    public ListCommand(LinkRepository linkRepository) {
+        this.storage = linkRepository;
     }
 
     @Override

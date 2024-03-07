@@ -3,17 +3,17 @@ package edu.java.bot.service.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.repository.LinkRepository;
 
 public class StartCommand implements Command {
 
     private static final String COMMAND = "/start";
     private static final String DESCRIPTION = "Начать работу с ботом";
-    private final LinkStorage storage;
+    private final LinkRepository storage;
 
 
-    public StartCommand(LinkStorage linkStorage) {
-        this.storage = linkStorage;
+    public StartCommand(LinkRepository linkRepository) {
+        this.storage = linkRepository;
     }
 
     @Override

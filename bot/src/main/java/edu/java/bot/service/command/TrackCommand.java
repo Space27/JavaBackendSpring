@@ -3,7 +3,7 @@ package edu.java.bot.service.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.repository.LinkRepository;
 import edu.java.bot.util.MessageParserUtil;
 import java.net.URI;
 import java.util.Optional;
@@ -13,10 +13,10 @@ public class TrackCommand implements Command {
     private static final String COMMAND = "/track";
     private static final String DESCRIPTION = "Начать отслеживание ссылки";
     private static final String NOT_STARTED = "Вы не зарегистрированы в системе!";
-    private final LinkStorage storage;
+    private final LinkRepository storage;
 
-    public TrackCommand(LinkStorage linkStorage) {
-        this.storage = linkStorage;
+    public TrackCommand(LinkRepository linkRepository) {
+        this.storage = linkRepository;
     }
 
     @Override

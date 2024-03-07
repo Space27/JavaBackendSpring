@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.bot.configuration.ClientConfiguration;
-import edu.java.bot.service.api.controller.response.ApiErrorResponse;
+import edu.java.bot.controller.response.ApiErrorResponse;
 import edu.java.bot.service.client.scrapperClient.response.LinkResponse;
 import edu.java.bot.service.client.scrapperClient.response.ListLinkResponse;
 import org.junit.jupiter.api.Assertions;
