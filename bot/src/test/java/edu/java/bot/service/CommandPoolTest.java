@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.repository.LinkStorage;
+import edu.java.bot.repository.LinkRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,13 +35,13 @@ class CommandPoolTest {
         return update;
     }
 
-    private static LinkStorage generateStorageWithLinks(List<String> links) {
-        LinkStorage linkStorage = Mockito.mock(LinkStorage.class);
+    private static LinkRepository generateStorageWithLinks(List<String> links) {
+        LinkRepository linkRepository = Mockito.mock(LinkRepository.class);
 
-        Mockito.when(linkStorage.get(any())).thenReturn(links);
-        Mockito.when(linkStorage.contains(any())).thenReturn(links != null);
+        Mockito.when(linkRepository.get(any())).thenReturn(links);
+        Mockito.when(linkRepository.contains(any())).thenReturn(links != null);
 
-        return linkStorage;
+        return linkRepository;
     }
 
     @ParameterizedTest

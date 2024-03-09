@@ -1,11 +1,9 @@
-package edu.java.scrapper.configuration;
+package edu.java.bot.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.scrapper.controller.response.ApiErrorResponse;
-import edu.java.scrapper.service.client.botClient.BotClient;
-import edu.java.scrapper.service.client.botClient.ResponseErrorException;
-import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
+import edu.java.bot.controller.response.ApiErrorResponse;
+import edu.java.bot.service.client.scrapperClient.ResponseErrorException;
+import edu.java.bot.service.client.scrapperClient.ScrapperClient;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +13,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ReactorNettyClientRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
@@ -24,7 +20,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class ClientConfiguration {
 
     @Bean
-    public BotClient botClient(@Value("${api.bot.baseurl}") String baseURL) {
+    public ScrapperClient scrapperClient(@Value("${api.scrapper.baseurl}") String baseURL) {
         RestClient restClient = RestClient.builder()
             .requestFactory(new ReactorNettyClientRequestFactory())
             .defaultStatusHandler(HttpStatusCode::isError, (request, response) -> {
@@ -42,24 +38,6 @@ public class ClientConfiguration {
         RestClientAdapter adapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 
-        return factory.createClient(BotClient.class);
-    }
-
-    @Bean
-    public GitHubClient gitHubClient(@Value("${api.github.baseurl}") String baseURL) {
-        WebClient webClient = WebClient.builder().baseUrl(baseURL).build();
-        WebClientAdapter adapter = WebClientAdapter.create(webClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-
-        return factory.createClient(GitHubClient.class);
-    }
-
-    @Bean
-    public StackOverflowClient stackOverflowClient(@Value("${api.stackoverflow.baseurl}") String baseURL) {
-        WebClient webClient = WebClient.builder().baseUrl(baseURL).build();
-        WebClientAdapter adapter = WebClientAdapter.create(webClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-
-        return factory.createClient(StackOverflowClient.class);
+        return factory.createClient(ScrapperClient.class);
     }
 }
