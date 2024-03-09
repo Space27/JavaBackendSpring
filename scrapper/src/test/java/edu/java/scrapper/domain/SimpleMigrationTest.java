@@ -1,6 +1,7 @@
-package edu.java.scrapper.repository;
+package edu.java.scrapper.domain;
 
 import edu.java.scrapper.IntegrationTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,13 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class SimpleMigrationTest extends IntegrationTest {
 
     @Test
-    void contextLoads() {
-        assertThat(POSTGRES.isRunning())
-            .isTrue();
-    }
-
-    @Test
-    void simpleTest() {
+    @DisplayName("Проверка запуска миграций")
+    void runMigrations_shouldCreateTables() {
         try (Connection connection = DriverManager.getConnection(
             POSTGRES.getJdbcUrl(),
             POSTGRES.getUsername(),

@@ -1,11 +1,11 @@
 create table if not exists link
 (
-    id          bigint generated always as identity,
-    url         text                     not null,
+    id            bigint generated always as identity,
+    url           text                     not null,
 
-    modified_at timestamp with time zone not null,
+    last_check_at timestamp with time zone not null default current_timestamp,
 
-    created_at  timestamp with time zone not null,
+    created_at    timestamp with time zone not null default current_timestamp,
 
     primary key (id),
     unique (url)

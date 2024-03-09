@@ -8,7 +8,9 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -20,6 +22,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 public abstract class IntegrationTest {
@@ -41,8 +44,8 @@ public abstract class IntegrationTest {
 
         try {
             Connection connection = DriverManager.getConnection(c.getJdbcUrl(), c.getUsername(), c.getPassword());
-            Database database = DatabaseFactory.getInstance()
-                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Database database =
+                DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase("master.xml", new DirectoryResourceAccessor(changeLogPath), database);
 
             liquibase.update(new Contexts(), new LabelExpression());
@@ -58,8 +61,11 @@ public abstract class IntegrationTest {
         registry.add("spring.datasource.password", POSTGRES::getPassword);
     }
 
-    @AfterAll
-    static void close() {
-        POSTGRES.close();
+    @Test
+    @Order(1)
+    @DisplayName("Загрузка контейнера")
+    void contextLoads() {
+        assertThat(POSTGRES.isRunning())
+            .isTrue();
     }
 }
