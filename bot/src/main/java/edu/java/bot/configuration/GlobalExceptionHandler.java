@@ -1,4 +1,4 @@
-package edu.java.bot.controller;
+package edu.java.bot.configuration;
 
 import edu.java.bot.controller.response.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;

@@ -1,4 +1,4 @@
-package edu.java.scrapper.controller;
+package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
 import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
