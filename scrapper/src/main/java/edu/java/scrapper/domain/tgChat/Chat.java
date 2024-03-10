@@ -1,4 +1,4 @@
-package edu.java.scrapper.domain.TgChat;
+package edu.java.scrapper.domain.tgChat;
 
 import java.time.OffsetDateTime;
 

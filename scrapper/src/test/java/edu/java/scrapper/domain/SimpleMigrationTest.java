@@ -3,6 +3,8 @@ package edu.java.scrapper.domain;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,11 +26,14 @@ class SimpleMigrationTest extends IntegrationTest {
         )) {
             String insertQuery = "insert into chat values(1, '2007-12-03T10:15:30+01:00')";
             String selectQuery = "select * from chat";
+            String deleteQuery = "delete from chat";
             PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
             PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+            PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
 
             assertDoesNotThrow(() -> insertStatement.execute());
             assertDoesNotThrow(() -> selectStatement.execute());
+            assertDoesNotThrow(() -> deleteStatement.execute());
             ResultSet resultSet = selectStatement.getResultSet();
             resultSet.next();
 
