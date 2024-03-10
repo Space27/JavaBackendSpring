@@ -1,6 +1,8 @@
 package edu.java.scrapper.controller.chatApi;
 
-import edu.java.scrapper.repository.LinkRepository;
+import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
+import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
+import edu.java.scrapper.service.tgChatService.TgChatService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,7 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -18,15 +19,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ChatApiController.class)
-@Import(ChatHandler.class)
-class ChatApiControllerTest {
+@WebMvcTest(controllers = ChatController.class)
+class ChatControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    LinkRepository linkRepository;
+    TgChatService chatService;
 
     @Test
     @DisplayName("Корректный запрос регистрации")
@@ -39,7 +39,7 @@ class ChatApiControllerTest {
     @Test
     @DisplayName("Повторная регистрация")
     void post_shouldReturnErrorForRepeatRequest() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
+        Mockito.doThrow(new ChatAlreadyExistsException(0L)).when(chatService).register(any());
 
         mockMvc.perform(post("/tg-chat/1")
                 .accept(MediaType.APPLICATION_JSON))
@@ -56,8 +56,6 @@ class ChatApiControllerTest {
     @Test
     @DisplayName("Корректный запрос удаления чата")
     void delete_shouldReturnOkForCorrectRequest() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
-
         mockMvc.perform(delete("/tg-chat/1")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
@@ -66,6 +64,8 @@ class ChatApiControllerTest {
     @Test
     @DisplayName("Удаление несуществующего чата")
     void delete_shouldReturnErrorForNotExistChat() throws Exception {
+        Mockito.doThrow(new ChatNotFoundException(0L)).when(chatService).unregister(any());
+
         mockMvc.perform(delete("/tg-chat/1")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())

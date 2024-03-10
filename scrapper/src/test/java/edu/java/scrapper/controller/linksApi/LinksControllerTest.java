@@ -1,22 +1,26 @@
 package edu.java.scrapper.controller.linksApi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.scrapper.controller.linksApi.exception.ChatNotExistsException;
+import edu.java.scrapper.controller.linksApi.exception.LinkAlreadyExistsException;
+import edu.java.scrapper.controller.linksApi.exception.LinkNotFoundException;
 import edu.java.scrapper.controller.request.AddLinkRequest;
 import edu.java.scrapper.controller.request.RemoveLinkRequest;
-import edu.java.scrapper.repository.LinkRepository;
+import edu.java.scrapper.domain.link.Link;
 import edu.java.scrapper.controller.response.LinkResponse;
 import edu.java.scrapper.controller.response.ListLinkResponse;
+import edu.java.scrapper.service.linkService.LinkService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -24,21 +28,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = LinksApiController.class)
-@Import(LinksHandler.class)
-class LinkControllerTest {
+@WebMvcTest(controllers = LinksController.class)
+class LinksControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    LinkRepository linkRepository;
+    LinkService linkService;
 
     @Test
     @DisplayName("Корректный запрос добавления")
     void post_shouldReturnOkForCorrectRequest() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
-        Mockito.when(linkRepository.add(any(), any())).thenReturn(1L);
+        Mockito.when(linkService.add(any(), any())).thenReturn(new Link(
+            1L,
+            URI.create("https://gist.github.com/"),
+            OffsetDateTime.now(),
+            OffsetDateTime.now()
+        ));
         AddLinkRequest addLinkRequest = new AddLinkRequest(URI.create("https://gist.github.com/"));
 
         mockMvc.perform(post("/links")
@@ -56,8 +63,7 @@ class LinkControllerTest {
     @Test
     @DisplayName("Добавление уже добавленной ссылки")
     void post_shouldReturnErrorForRepeatLink() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
-        Mockito.when(linkRepository.add(any(), any())).thenReturn(null);
+        Mockito.when(linkService.add(any(), any())).thenThrow(new LinkAlreadyExistsException("fr"));
         AddLinkRequest addLinkRequest = new AddLinkRequest(URI.create("https://gist.github.com/"));
 
         mockMvc.perform(post("/links")
@@ -78,7 +84,7 @@ class LinkControllerTest {
     @Test
     @DisplayName("Добавление ссылки в несуществующий чат")
     void post_shouldReturnErrorForNotExistingChat() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(false);
+        Mockito.when(linkService.add(any(), any())).thenThrow(new ChatNotExistsException(1L));
         AddLinkRequest addLinkRequest = new AddLinkRequest(URI.create("https://gist.github.com/"));
 
         mockMvc.perform(post("/links")
@@ -99,15 +105,14 @@ class LinkControllerTest {
     @Test
     @DisplayName("Корректный запрос получения ссылок")
     void get_shouldReturnOkForCorrectRequest() throws Exception {
-        List<LinkRepository.Link> links = List.of(
-            new LinkRepository.Link(1L, "https://gist.github.com/"),
-            new LinkRepository.Link(2L, "https://github.com/")
+        List<Link> links = List.of(
+            new Link(1L, URI.create("https://gist.github.com/"), OffsetDateTime.now(), OffsetDateTime.now()),
+            new Link(2L, URI.create("https://github.com/"), OffsetDateTime.now(), OffsetDateTime.now())
         );
         ListLinkResponse expected = new ListLinkResponse(links.stream()
-            .map(link -> new LinkResponse(link.id(), URI.create(link.link())))
+            .map(link -> new LinkResponse(link.id(), link.url()))
             .toList(), links.size());
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
-        Mockito.when(linkRepository.get(any())).thenReturn(links);
+        Mockito.when(linkService.listAll(any())).thenReturn(links);
 
         mockMvc.perform(get("/links")
                 .header("Tg-Chat-Id", 1)
@@ -123,7 +128,7 @@ class LinkControllerTest {
     @Test
     @DisplayName("Запрос получения ссылок из несуществующего чата")
     void get_shouldReturnErrorForNotExistingChat() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(false);
+        Mockito.when(linkService.listAll(any())).thenThrow(new ChatNotExistsException(1L));
 
         mockMvc.perform(get("/links")
                 .header("Tg-Chat-Id", 1)
@@ -141,8 +146,12 @@ class LinkControllerTest {
     @Test
     @DisplayName("Корректный запрос удаления ссылки")
     void delete_shouldReturnOkForCorrectRequest() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
-        Mockito.when(linkRepository.remove(any(), any())).thenReturn(1L);
+        Mockito.when(linkService.remove(any(), any())).thenReturn(new Link(
+            1L,
+            URI.create("https://gist.github.com/"),
+            OffsetDateTime.now(),
+            OffsetDateTime.now()
+        ));
         RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(URI.create("https://gist.github.com/"));
 
         mockMvc.perform(delete("/links")
@@ -160,8 +169,7 @@ class LinkControllerTest {
     @Test
     @DisplayName("Запрос удаления ссылки из несуществующего чата")
     void delete_shouldReturnErrorForNotExistingChat() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(false);
-        Mockito.when(linkRepository.remove(any(), any())).thenReturn(1L);
+        Mockito.when(linkService.remove(any(), any())).thenThrow(new ChatNotExistsException(1L));
         RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(URI.create("https://gist.github.com/"));
 
         mockMvc.perform(delete("/links")
@@ -182,8 +190,7 @@ class LinkControllerTest {
     @Test
     @DisplayName("Запрос удаления несуществующей ссылки")
     void delete_shouldReturnErrorForNotExistingLink() throws Exception {
-        Mockito.when(linkRepository.contains(any())).thenReturn(true);
-        Mockito.when(linkRepository.remove(any(), any())).thenReturn(null);
+        Mockito.when(linkService.remove(any(), any())).thenThrow(new LinkNotFoundException("fr"));
         RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(URI.create("https://gist.github.com/"));
 
         mockMvc.perform(delete("/links")
