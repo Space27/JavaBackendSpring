@@ -1,5 +1,7 @@
 package edu.java.scrapper.domain.chatLink;
 
+import edu.java.scrapper.domain.link.Link;
+import edu.java.scrapper.domain.tgChat.Chat;
 import java.util.List;
 
 public interface ChatLinkDao {
@@ -10,7 +12,7 @@ public interface ChatLinkDao {
 
     List<ChatLink> findAll();
 
-    List<ChatLink> findAllByChat(Long chatID);
+    List<Link> findLinksByChat(Long chatID);
 
-    List<ChatLink> findAllByLink(Long linkID);
+    List<Chat> findChatsByLink(Long linkID);
 }

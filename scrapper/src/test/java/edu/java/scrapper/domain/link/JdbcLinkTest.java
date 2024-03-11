@@ -14,6 +14,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
@@ -218,5 +219,27 @@ class JdbcLinkTest extends IntegrationTest {
         assertThat(result)
             .isNotNull()
             .isEmpty();
+    }
+
+    @Test
+    @Rollback
+    @Transactional
+    @DisplayName("Список link по времени")
+    void findAll_shouldReturnAllLinksWithMinTime() {
+        OffsetDateTime base = OffsetDateTime.now();
+        Map<URI, OffsetDateTime> links = Map.of(
+            URI.create("https://edu.tinkoff.ru/"), base.minusSeconds(1),
+            URI.create("https://github.com/"), base,
+            URI.create("https://lk.etu.ru/"), base.plusSeconds(1)
+        );
+        for (Map.Entry<URI, OffsetDateTime> link : links.entrySet()) {
+            linkDao.add(link.getKey(), link.getValue());
+        }
+
+        List<Link> result = linkDao.findAll(base);
+
+        assertThat(result)
+            .isNotNull()
+            .hasSize(2);
     }
 }

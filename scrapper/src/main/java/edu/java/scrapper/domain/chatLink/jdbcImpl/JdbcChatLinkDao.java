@@ -2,6 +2,8 @@ package edu.java.scrapper.domain.chatLink.jdbcImpl;
 
 import edu.java.scrapper.domain.chatLink.ChatLink;
 import edu.java.scrapper.domain.chatLink.ChatLinkDao;
+import edu.java.scrapper.domain.link.Link;
+import edu.java.scrapper.domain.tgChat.Chat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,13 +17,17 @@ public class JdbcChatLinkDao implements ChatLinkDao {
     private static final String ADD_QUERY =
         "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
     private static final String REMOVE_QUERY =
-        "DELETE FROM chat_link WHERE chat_id = ? and link_id = ?";
+        "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?";
     private static final String SELECT_ALL_QUERY =
         "SELECT * FROM chat_link";
-    private static final String SELECT_BY_CHAT_QUERY =
-        "SELECT * FROM chat_link WHERE chat_id = ?";
-    private static final String SELECT_BY_LINK_QUERY =
-        "SELECT * FROM chat_link WHERE link_id = ?";
+    private static final String SELECT_LINKS_BY_CHAT_QUERY =
+        "SELECT l.* FROM link l "
+            + "JOIN chat_link ON id = link_id "
+            + "WHERE chat_id = ?";
+    private static final String SELECT_CHATS_BY_LINK_QUERY =
+        "SELECT c.* FROM chat c "
+            + "JOIN chat_link ON c.id = chat_id "
+            + "WHERE link_id = ?";
 
     private final JdbcClient jdbcClient;
 
@@ -53,18 +59,18 @@ public class JdbcChatLinkDao implements ChatLinkDao {
     }
 
     @Override
-    public List<ChatLink> findAllByChat(Long chatID) {
-        return jdbcClient.sql(SELECT_BY_CHAT_QUERY)
+    public List<Link> findLinksByChat(Long chatID) {
+        return jdbcClient.sql(SELECT_LINKS_BY_CHAT_QUERY)
             .param(chatID)
-            .query(ChatLink.class)
+            .query(Link.class)
             .list();
     }
 
     @Override
-    public List<ChatLink> findAllByLink(Long linkID) {
-        return jdbcClient.sql(SELECT_BY_LINK_QUERY)
+    public List<Chat> findChatsByLink(Long linkID) {
+        return jdbcClient.sql(SELECT_CHATS_BY_LINK_QUERY)
             .param(linkID)
-            .query(ChatLink.class)
+            .query(Chat.class)
             .list();
     }
 }

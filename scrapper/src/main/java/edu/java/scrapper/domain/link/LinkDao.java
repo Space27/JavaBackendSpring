@@ -17,4 +17,6 @@ public interface LinkDao {
     Link find(Long id);
 
     List<Link> findAll();
+
+    List<Link> findAll(OffsetDateTime minLastCheckTime);
 }

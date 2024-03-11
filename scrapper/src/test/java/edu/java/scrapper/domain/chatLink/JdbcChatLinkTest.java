@@ -4,6 +4,7 @@ import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.domain.chatLink.jdbcImpl.JdbcChatLinkDao;
 import edu.java.scrapper.domain.link.Link;
 import edu.java.scrapper.domain.link.jdbcImpl.JdbcLinkDao;
+import edu.java.scrapper.domain.tgChat.Chat;
 import edu.java.scrapper.domain.tgChat.jdbcImpl.JdbcTgChatDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -172,7 +173,7 @@ class JdbcChatLinkTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    @DisplayName("Список связей по чату")
+    @DisplayName("Список ссылок по чату")
     void findAllByChat_shouldListAllRelations() {
         List<Long> chatIDs = List.of(1L, 2L);
         List<URI> urls = List.of(
@@ -192,22 +193,19 @@ class JdbcChatLinkTest extends IntegrationTest {
         chatLinkDao.add(2L, links.get(1).id());
         chatLinkDao.add(2L, links.get(2).id());
 
-        List<ChatLink> chatLinks = chatLinkDao.findAllByChat(1L);
+        List<Link> answer = chatLinkDao.findLinksByChat(1L);
 
-        assertThat(chatLinks)
+        assertThat(answer)
             .isNotNull()
             .hasSize(2)
-            .doesNotHaveDuplicates();
-        for (ChatLink chatLink : chatLinks) {
-            assertThat(chatLink.chatId())
-                .isEqualTo(1L);
-        }
+            .doesNotHaveDuplicates()
+            .contains(links.get(0), links.get(2));
     }
 
     @Test
     @Transactional
     @Rollback
-    @DisplayName("Список связей по ссылке")
+    @DisplayName("Список чатов по ссылке")
     void findAllByUrl_shouldListAllRelations() {
         List<Long> chatIDs = List.of(1L, 2L);
         List<URI> urls = List.of(
@@ -227,17 +225,11 @@ class JdbcChatLinkTest extends IntegrationTest {
         chatLinkDao.add(2L, links.get(1).id());
         chatLinkDao.add(2L, links.get(2).id());
 
-        List<ChatLink> chatLinks = chatLinkDao.findAllByLink(links.get(2).id());
+        List<Chat> answer = chatLinkDao.findChatsByLink(links.get(2).id());
 
-        assertThat(chatLinks)
+        assertThat(answer)
             .isNotNull()
             .hasSize(2)
             .doesNotHaveDuplicates();
-        for (ChatLink chatLink : chatLinks) {
-            assertThat(chatLink.linkId())
-                .isEqualTo(links.get(2).id());
-            assertThat(chatIDs)
-                .contains(chatLink.chatId());
-        }
     }
 }

@@ -3,7 +3,6 @@ package edu.java.scrapper.service.linkService;
 import edu.java.scrapper.controller.linksApi.exception.ChatNotExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkAlreadyExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkNotFoundException;
-import edu.java.scrapper.domain.chatLink.ChatLink;
 import edu.java.scrapper.domain.chatLink.jdbcImpl.JdbcChatLinkDao;
 import edu.java.scrapper.domain.link.Link;
 import edu.java.scrapper.domain.link.jdbcImpl.JdbcLinkDao;
@@ -109,14 +108,8 @@ class JdbcLinkServiceTest {
             new Link(1L, URI.create("https://gist.github.com/"), OffsetDateTime.now(), OffsetDateTime.now()),
             new Link(2L, URI.create("https://github.com/"), OffsetDateTime.now(), OffsetDateTime.now())
         );
-        List<ChatLink> chatLinks = List.of(
-            new ChatLink(0L, 1L, OffsetDateTime.now()),
-            new ChatLink(0L, 2L, OffsetDateTime.now())
-        );
         Mockito.when(chatDao.findById(any())).thenReturn(new Chat(0L, OffsetDateTime.now()));
-        Mockito.when(chatLinkDao.findAllByChat(any())).thenReturn(chatLinks);
-        Mockito.when(linkDao.find(1L)).thenReturn(links.get(0));
-        Mockito.when(linkDao.find(2L)).thenReturn(links.get(1));
+        Mockito.when(chatLinkDao.findLinksByChat(any())).thenReturn(links);
 
         List<Link> result = assertDoesNotThrow(() -> linkService.listAll(0L)).stream().toList();
 

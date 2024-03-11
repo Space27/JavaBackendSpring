@@ -27,6 +27,8 @@ public class JdbcLinkDao implements LinkDao {
         "SELECT * FROM link WHERE id = ?";
     private static final String SELECT_QUERY =
         "SELECT * FROM link";
+    private static final String SELECT_BY_TIME_QUERY =
+        "SELECT * FROM link WHERE last_check_at >= ?";
 
     private final JdbcClient jdbcClient;
 
@@ -74,6 +76,14 @@ public class JdbcLinkDao implements LinkDao {
     @Override
     public List<Link> findAll() {
         return jdbcClient.sql(SELECT_QUERY)
+            .query(Link.class)
+            .list();
+    }
+
+    @Override
+    public List<Link> findAll(OffsetDateTime minLastCheckTime) {
+        return jdbcClient.sql(SELECT_BY_TIME_QUERY)
+            .param(minLastCheckTime)
             .query(Link.class)
             .list();
     }
