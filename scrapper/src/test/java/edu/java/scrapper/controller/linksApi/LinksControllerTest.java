@@ -10,6 +10,7 @@ import edu.java.scrapper.domain.link.Link;
 import edu.java.scrapper.controller.response.LinkResponse;
 import edu.java.scrapper.controller.response.ListLinkResponse;
 import edu.java.scrapper.service.linkService.LinkService;
+import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdater;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,10 +37,13 @@ class LinksControllerTest {
 
     @MockBean
     LinkService linkService;
+    @MockBean
+    ClientUpdater clientUpdater;
 
     @Test
     @DisplayName("Корректный запрос добавления")
     void post_shouldReturnOkForCorrectRequest() throws Exception {
+        Mockito.when(clientUpdater.supports(any())).thenReturn(true);
         Mockito.when(linkService.add(any(), any())).thenReturn(new Link(
             1L,
             URI.create("https://gist.github.com/"),
@@ -63,6 +67,7 @@ class LinksControllerTest {
     @Test
     @DisplayName("Добавление уже добавленной ссылки")
     void post_shouldReturnErrorForRepeatLink() throws Exception {
+        Mockito.when(clientUpdater.supports(any())).thenReturn(true);
         Mockito.when(linkService.add(any(), any())).thenThrow(new LinkAlreadyExistsException("fr"));
         AddLinkRequest addLinkRequest = new AddLinkRequest(URI.create("https://gist.github.com/"));
 
@@ -84,6 +89,7 @@ class LinksControllerTest {
     @Test
     @DisplayName("Добавление ссылки в несуществующий чат")
     void post_shouldReturnErrorForNotExistingChat() throws Exception {
+        Mockito.when(clientUpdater.supports(any())).thenReturn(true);
         Mockito.when(linkService.add(any(), any())).thenThrow(new ChatNotExistsException(1L));
         AddLinkRequest addLinkRequest = new AddLinkRequest(URI.create("https://gist.github.com/"));
 
@@ -97,6 +103,26 @@ class LinksControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("406"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.description").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Нельзя получить доступ к чату"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.stacktrace").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionMessage").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionName").exists());
+    }
+
+    @Test
+    @DisplayName("Некорректная ссылка при добавлении")
+    void post_shouldReturnValidErrorForIncorrectLink() throws Exception {
+        AddLinkRequest addLinkRequest = new AddLinkRequest(URI.create("https://github.com/"));
+
+        mockMvc.perform(post("/links")
+                .header("Tg-Chat-Id", 1)
+                .content(asJsonString(addLinkRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.code").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Некорректные параметры запроса"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.stacktrace").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionMessage").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionName").exists());
