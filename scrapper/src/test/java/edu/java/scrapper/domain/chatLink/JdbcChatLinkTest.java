@@ -173,8 +173,70 @@ class JdbcChatLinkTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    @DisplayName("Список ссылок по чату")
+    @DisplayName("Список связей по чату")
     void findAllByChat_shouldListAllRelations() {
+        List<Long> chatIDs = List.of(1L, 2L);
+        List<URI> urls = List.of(
+            URI.create("https://edu.tinkoff.ru/"),
+            URI.create("https://github.com/"),
+            URI.create("https://lk.etu.ru/")
+        );
+        List<Link> links = new ArrayList<>();
+        for (Long id : chatIDs) {
+            chatDao.add(id);
+        }
+        for (URI url : urls) {
+            links.add(linkDao.add(url));
+        }
+        chatLinkDao.add(1L, links.get(0).id());
+        chatLinkDao.add(1L, links.get(2).id());
+        chatLinkDao.add(2L, links.get(1).id());
+        chatLinkDao.add(2L, links.get(2).id());
+
+        List<ChatLink> chatLinks = chatLinkDao.findAllByChat(1L);
+
+        assertThat(chatLinks)
+            .isNotNull()
+            .hasSize(2)
+            .doesNotHaveDuplicates();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DisplayName("Список связей по ссылке")
+    void findAllByLink_shouldListAllRelations() {
+        List<Long> chatIDs = List.of(1L, 2L);
+        List<URI> urls = List.of(
+            URI.create("https://edu.tinkoff.ru/"),
+            URI.create("https://github.com/"),
+            URI.create("https://lk.etu.ru/")
+        );
+        List<Link> links = new ArrayList<>();
+        for (Long id : chatIDs) {
+            chatDao.add(id);
+        }
+        for (URI url : urls) {
+            links.add(linkDao.add(url));
+        }
+        chatLinkDao.add(1L, links.get(0).id());
+        chatLinkDao.add(1L, links.get(2).id());
+        chatLinkDao.add(2L, links.get(1).id());
+        chatLinkDao.add(2L, links.get(2).id());
+
+        List<ChatLink> chatLinks = chatLinkDao.findAllByLink(links.get(2).id());
+
+        assertThat(chatLinks)
+            .isNotNull()
+            .hasSize(2)
+            .doesNotHaveDuplicates();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DisplayName("Список ссылок по чату")
+    void findAllByChat_shouldListAllLinks() {
         List<Long> chatIDs = List.of(1L, 2L);
         List<URI> urls = List.of(
             URI.create("https://edu.tinkoff.ru/"),
@@ -206,7 +268,7 @@ class JdbcChatLinkTest extends IntegrationTest {
     @Transactional
     @Rollback
     @DisplayName("Список чатов по ссылке")
-    void findAllByUrl_shouldListAllRelations() {
+    void findAllByUrl_shouldListAllChats() {
         List<Long> chatIDs = List.of(1L, 2L);
         List<URI> urls = List.of(
             URI.create("https://edu.tinkoff.ru/"),

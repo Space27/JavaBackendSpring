@@ -9,14 +9,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 @RequiredArgsConstructor
 public class StackOverflowClientUpdateService implements ClientUpdateService {
 
     private static final Pattern REGEX = Pattern.compile("stackoverflow\\.com/questions/(\\d+)");
-    private static final String UPDATE_ANSWER = "StackOverflow: Последнее обновление в %s\n";
+    private static final String UPDATE_ANSWER = "StackOverflow: Последнее обновление в %s";
 
     private final StackOverflowClient client;
 
@@ -30,7 +29,7 @@ public class StackOverflowClientUpdateService implements ClientUpdateService {
             try {
                 client.fetchQuestion(questionId);
                 return true;
-            } catch (WebClientResponseException e) {
+            } catch (Exception e) {
                 return false;
             }
         }

@@ -9,14 +9,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 @RequiredArgsConstructor
 public class GitHubClientUpdateService implements ClientUpdateService {
 
     private static final Pattern REGEX = Pattern.compile("github\\.com/(\\w+)/(\\w+)");
-    private static final String UPDATE_ANSWER = "Github: Последнее обновление в %s\n";
+    private static final String UPDATE_ANSWER = "Github: Последнее обновление в %s";
 
     private final GitHubClient client;
 
@@ -31,7 +30,7 @@ public class GitHubClientUpdateService implements ClientUpdateService {
             try {
                 client.fetchRepository(owner, repo);
                 return true;
-            } catch (WebClientResponseException e) {
+            } catch (Exception e) {
                 return false;
             }
         }

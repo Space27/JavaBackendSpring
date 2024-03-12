@@ -20,6 +20,10 @@ public class JdbcChatLinkDao implements ChatLinkDao {
         "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?";
     private static final String SELECT_ALL_QUERY =
         "SELECT * FROM chat_link";
+    private static final String SELECT_ALL_BY_CHAT_QUERY =
+        "SELECT * FROM chat_link WHERE chat_id = ?";
+    private static final String SELECT_ALL_BY_LINK_QUERY =
+        "SELECT * FROM chat_link WHERE link_id = ?";
     private static final String SELECT_LINKS_BY_CHAT_QUERY =
         "SELECT l.* FROM link l "
             + "JOIN chat_link ON id = link_id "
@@ -54,6 +58,22 @@ public class JdbcChatLinkDao implements ChatLinkDao {
     @Override
     public List<ChatLink> findAll() {
         return jdbcClient.sql(SELECT_ALL_QUERY)
+            .query(ChatLink.class)
+            .list();
+    }
+
+    @Override
+    public List<ChatLink> findAllByChat(Long chatID) {
+        return jdbcClient.sql(SELECT_ALL_BY_CHAT_QUERY)
+            .param(chatID)
+            .query(ChatLink.class)
+            .list();
+    }
+
+    @Override
+    public List<ChatLink> findAllByLink(Long linkID) {
+        return jdbcClient.sql(SELECT_ALL_BY_LINK_QUERY)
+            .param(linkID)
             .query(ChatLink.class)
             .list();
     }

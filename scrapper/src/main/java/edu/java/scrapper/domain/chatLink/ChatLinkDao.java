@@ -12,6 +12,10 @@ public interface ChatLinkDao {
 
     List<ChatLink> findAll();
 
+    List<ChatLink> findAllByChat(Long chatID);
+
+    List<ChatLink> findAllByLink(Long linkID);
+
     List<Link> findLinksByChat(Long chatID);
 
     List<Chat> findChatsByLink(Long linkID);
