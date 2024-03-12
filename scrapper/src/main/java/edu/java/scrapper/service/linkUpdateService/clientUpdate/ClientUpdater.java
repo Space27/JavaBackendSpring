@@ -2,7 +2,9 @@ package edu.java.scrapper.service.linkUpdateService.clientUpdate;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,14 @@ public class ClientUpdater {
             .anyMatch(clientUpdateService -> clientUpdateService.supports(link));
     }
 
-    public String handle(URI link, OffsetDateTime lastCheckTime) {
+    public LinkedHashMap<String, OffsetDateTime> handle(URI link, OffsetDateTime lastCheckTime) {
         return clientUpdaters.stream()
             .map(clientUpdateService -> clientUpdateService.handle(link, lastCheckTime))
             .filter(Objects::nonNull)
-            .collect(Collectors.joining());
+            .flatMap(m -> m.entrySet().stream())
+            .sorted(Map.Entry.comparingByValue())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                (e1, e2) -> e1, LinkedHashMap::new
+            ));
     }
 }

@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -81,10 +82,12 @@ public class GitHubClientUpdateTest {
         RepositoryResponse response = new RepositoryResponse("fr", "fr", uri, time);
         Mockito.when(client.fetchRepository(any(), any())).thenReturn(response);
 
-        String answer = clientUpdateService.handle(uri, time.minusNanos(1));
+        Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time.minusNanos(1));
 
         assertThat(answer)
-            .isNotEmpty();
+            .isNotEmpty()
+            .hasSize(1)
+            .containsValue(time);
     }
 
     @Test
@@ -96,9 +99,9 @@ public class GitHubClientUpdateTest {
         RepositoryResponse response = new RepositoryResponse("fr", "fr", uri, time);
         Mockito.when(client.fetchRepository(any(), any())).thenReturn(response);
 
-        String answer = clientUpdateService.handle(uri, time);
+        Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time);
 
         assertThat(answer)
-            .isNull();
+            .isEmpty();
     }
 }

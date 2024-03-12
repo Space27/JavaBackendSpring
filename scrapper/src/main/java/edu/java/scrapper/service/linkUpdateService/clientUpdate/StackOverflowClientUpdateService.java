@@ -4,6 +4,7 @@ import edu.java.scrapper.service.client.stackOverflowClient.QuestionResponse;
 import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 public class StackOverflowClientUpdateService implements ClientUpdateService {
 
     private static final Pattern REGEX = Pattern.compile("stackoverflow\\.com/questions/(\\d+)");
-    private static final String UPDATE_ANSWER = "StackOverflow: Обновление в %s\n";
+    private static final String UPDATE_ANSWER = "StackOverflow: Последнее обновление в %s\n";
 
     private final StackOverflowClient client;
 
@@ -38,7 +39,7 @@ public class StackOverflowClientUpdateService implements ClientUpdateService {
     }
 
     @Override
-    public String handle(URI link, OffsetDateTime lastCheckTime) {
+    public Map<String, OffsetDateTime> handle(URI link, OffsetDateTime lastCheckTime) {
         Matcher matcher = REGEX.matcher(link.toString());
 
         if (matcher.find()) {
@@ -48,10 +49,10 @@ public class StackOverflowClientUpdateService implements ClientUpdateService {
             OffsetDateTime lastModified = response.items().getFirst().update();
 
             if (lastModified.isAfter(lastCheckTime)) {
-                return String.format(UPDATE_ANSWER, lastModified);
+                return Map.of(String.format(UPDATE_ANSWER, lastModified), lastModified);
             }
         }
 
-        return null;
+        return Map.of();
     }
 }
