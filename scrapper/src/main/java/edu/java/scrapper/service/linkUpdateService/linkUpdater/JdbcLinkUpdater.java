@@ -1,9 +1,9 @@
 package edu.java.scrapper.service.linkUpdateService.linkUpdater;
 
-import edu.java.scrapper.domain.dto.ChatLink;
-import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.domain.dao.jdbc.JdbcChatLinkDao;
 import edu.java.scrapper.domain.dao.jdbc.JdbcLinkDao;
+import edu.java.scrapper.domain.dto.ChatLink;
+import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.service.client.botClient.BotClient;
 import edu.java.scrapper.service.client.botClient.ResponseErrorException;
 import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdater;
