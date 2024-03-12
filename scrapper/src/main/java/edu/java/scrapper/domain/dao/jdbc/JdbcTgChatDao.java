@@ -1,7 +1,7 @@
-package edu.java.scrapper.domain.tgChat.jdbcImpl;
+package edu.java.scrapper.domain.dao.jdbc;
 
-import edu.java.scrapper.domain.tgChat.Chat;
-import edu.java.scrapper.domain.tgChat.TgChatDao;
+import edu.java.scrapper.domain.dao.TgChatDao;
+import edu.java.scrapper.domain.dto.Chat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;

@@ -1,7 +1,8 @@
-package edu.java.scrapper.domain.link;
+package edu.java.scrapper.domain.dao.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
-import edu.java.scrapper.domain.link.jdbcImpl.JdbcLinkDao;
+import edu.java.scrapper.domain.dto.Link;
+import edu.java.scrapper.domain.dao.jdbc.JdbcLinkDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -241,5 +242,7 @@ class JdbcLinkTest extends IntegrationTest {
         assertThat(result)
             .isNotNull()
             .hasSize(2);
+        assertThat(result.stream().map(Link::url).toList())
+            .contains(URI.create("https://github.com/"), URI.create("https://edu.tinkoff.ru/"));
     }
 }

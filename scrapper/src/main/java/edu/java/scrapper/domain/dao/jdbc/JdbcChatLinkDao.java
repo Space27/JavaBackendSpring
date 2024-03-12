@@ -1,9 +1,9 @@
-package edu.java.scrapper.domain.chatLink.jdbcImpl;
+package edu.java.scrapper.domain.dao.jdbc;
 
-import edu.java.scrapper.domain.chatLink.ChatLink;
-import edu.java.scrapper.domain.chatLink.ChatLinkDao;
-import edu.java.scrapper.domain.link.Link;
-import edu.java.scrapper.domain.tgChat.Chat;
+import edu.java.scrapper.domain.dao.ChatLinkDao;
+import edu.java.scrapper.domain.dto.Chat;
+import edu.java.scrapper.domain.dto.ChatLink;
+import edu.java.scrapper.domain.dto.Link;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

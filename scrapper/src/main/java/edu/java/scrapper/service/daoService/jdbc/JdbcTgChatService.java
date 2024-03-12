@@ -1,9 +1,9 @@
-package edu.java.scrapper.service.tgChatService.jdbc;
+package edu.java.scrapper.service.daoService.jdbc;
 
 import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
 import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
-import edu.java.scrapper.domain.tgChat.jdbcImpl.JdbcTgChatDao;
-import edu.java.scrapper.service.tgChatService.TgChatService;
+import edu.java.scrapper.domain.dao.jdbc.JdbcTgChatDao;
+import edu.java.scrapper.service.daoService.TgChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

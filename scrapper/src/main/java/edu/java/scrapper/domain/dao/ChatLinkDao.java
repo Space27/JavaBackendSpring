@@ -1,7 +1,8 @@
-package edu.java.scrapper.domain.chatLink;
+package edu.java.scrapper.domain.dao;
 
-import edu.java.scrapper.domain.link.Link;
-import edu.java.scrapper.domain.tgChat.Chat;
+import edu.java.scrapper.domain.dto.Chat;
+import edu.java.scrapper.domain.dto.ChatLink;
+import edu.java.scrapper.domain.dto.Link;
 import java.util.List;
 
 public interface ChatLinkDao {

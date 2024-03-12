@@ -1,9 +1,9 @@
-package edu.java.scrapper.service.tgChatService;
+package edu.java.scrapper.service.daoService.jdbc;
 
 import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
 import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
-import edu.java.scrapper.domain.tgChat.jdbcImpl.JdbcTgChatDao;
-import edu.java.scrapper.service.tgChatService.jdbc.JdbcTgChatService;
+import edu.java.scrapper.domain.dao.jdbc.JdbcTgChatDao;
+import edu.java.scrapper.service.daoService.jdbc.JdbcTgChatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

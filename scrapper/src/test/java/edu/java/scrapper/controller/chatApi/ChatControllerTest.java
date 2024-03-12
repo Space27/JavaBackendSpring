@@ -2,7 +2,7 @@ package edu.java.scrapper.controller.chatApi;
 
 import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
 import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
-import edu.java.scrapper.service.tgChatService.TgChatService;
+import edu.java.scrapper.service.daoService.TgChatService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

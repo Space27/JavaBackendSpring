@@ -1,14 +1,14 @@
-package edu.java.scrapper.service.linkService;
+package edu.java.scrapper.service.daoService.jdbc;
 
 import edu.java.scrapper.controller.linksApi.exception.ChatNotExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkAlreadyExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkNotFoundException;
-import edu.java.scrapper.domain.chatLink.jdbcImpl.JdbcChatLinkDao;
-import edu.java.scrapper.domain.link.Link;
-import edu.java.scrapper.domain.link.jdbcImpl.JdbcLinkDao;
-import edu.java.scrapper.domain.tgChat.Chat;
-import edu.java.scrapper.domain.tgChat.jdbcImpl.JdbcTgChatDao;
-import edu.java.scrapper.service.linkService.jdbc.JdbcLinkService;
+import edu.java.scrapper.domain.dao.jdbc.JdbcChatLinkDao;
+import edu.java.scrapper.domain.dto.Link;
+import edu.java.scrapper.domain.dao.jdbc.JdbcLinkDao;
+import edu.java.scrapper.domain.dto.Chat;
+import edu.java.scrapper.domain.dao.jdbc.JdbcTgChatDao;
+import edu.java.scrapper.service.daoService.jdbc.JdbcLinkService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

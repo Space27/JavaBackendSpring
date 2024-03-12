@@ -1,4 +1,4 @@
-package edu.java.scrapper.domain.chatLink;
+package edu.java.scrapper.domain.dto;
 
 import java.time.OffsetDateTime;
 

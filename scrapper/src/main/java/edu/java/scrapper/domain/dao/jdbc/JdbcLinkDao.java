@@ -1,7 +1,7 @@
-package edu.java.scrapper.domain.link.jdbcImpl;
+package edu.java.scrapper.domain.dao.jdbc;
 
-import edu.java.scrapper.domain.link.Link;
-import edu.java.scrapper.domain.link.LinkDao;
+import edu.java.scrapper.domain.dao.LinkDao;
+import edu.java.scrapper.domain.dto.Link;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ public class JdbcLinkDao implements LinkDao {
     private static final String SELECT_QUERY =
         "SELECT * FROM link";
     private static final String SELECT_BY_TIME_QUERY =
-        "SELECT * FROM link WHERE last_check_at >= ?";
+        "SELECT * FROM link WHERE last_check_at <= ?";
 
     private final JdbcClient jdbcClient;
 

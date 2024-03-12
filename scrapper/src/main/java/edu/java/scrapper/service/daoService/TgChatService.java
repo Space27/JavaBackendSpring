@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.tgChatService;
+package edu.java.scrapper.service.daoService;
 
 import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
 import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;

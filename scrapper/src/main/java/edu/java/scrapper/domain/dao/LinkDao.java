@@ -1,5 +1,6 @@
-package edu.java.scrapper.domain.link;
+package edu.java.scrapper.domain.dao;
 
+import edu.java.scrapper.domain.dto.Link;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;

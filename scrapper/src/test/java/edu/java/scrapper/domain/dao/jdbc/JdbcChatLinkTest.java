@@ -1,11 +1,12 @@
-package edu.java.scrapper.domain.chatLink;
+package edu.java.scrapper.domain.dao.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
-import edu.java.scrapper.domain.chatLink.jdbcImpl.JdbcChatLinkDao;
-import edu.java.scrapper.domain.link.Link;
-import edu.java.scrapper.domain.link.jdbcImpl.JdbcLinkDao;
-import edu.java.scrapper.domain.tgChat.Chat;
-import edu.java.scrapper.domain.tgChat.jdbcImpl.JdbcTgChatDao;
+import edu.java.scrapper.domain.dao.jdbc.JdbcChatLinkDao;
+import edu.java.scrapper.domain.dto.ChatLink;
+import edu.java.scrapper.domain.dto.Link;
+import edu.java.scrapper.domain.dao.jdbc.JdbcLinkDao;
+import edu.java.scrapper.domain.dto.Chat;
+import edu.java.scrapper.domain.dao.jdbc.JdbcTgChatDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

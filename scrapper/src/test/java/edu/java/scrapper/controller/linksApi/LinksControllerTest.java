@@ -6,10 +6,10 @@ import edu.java.scrapper.controller.linksApi.exception.LinkAlreadyExistsExceptio
 import edu.java.scrapper.controller.linksApi.exception.LinkNotFoundException;
 import edu.java.scrapper.controller.request.AddLinkRequest;
 import edu.java.scrapper.controller.request.RemoveLinkRequest;
-import edu.java.scrapper.domain.link.Link;
+import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.controller.response.LinkResponse;
 import edu.java.scrapper.controller.response.ListLinkResponse;
-import edu.java.scrapper.service.linkService.LinkService;
+import edu.java.scrapper.service.daoService.LinkService;
 import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdater;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

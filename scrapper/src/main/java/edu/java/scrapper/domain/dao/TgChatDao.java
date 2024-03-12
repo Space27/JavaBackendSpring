@@ -1,5 +1,6 @@
-package edu.java.scrapper.domain.tgChat;
+package edu.java.scrapper.domain.dao;
 
+import edu.java.scrapper.domain.dto.Chat;
 import java.util.List;
 
 public interface TgChatDao {

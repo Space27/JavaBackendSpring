@@ -1,9 +1,9 @@
-package edu.java.scrapper.service.linkService;
+package edu.java.scrapper.service.daoService;
 
 import edu.java.scrapper.controller.linksApi.exception.ChatNotExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkAlreadyExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkNotFoundException;
-import edu.java.scrapper.domain.link.Link;
+import edu.java.scrapper.domain.dto.Link;
 import java.net.URI;
 import java.util.Collection;
 

@@ -1,14 +1,14 @@
-package edu.java.scrapper.service.linkService.jdbc;
+package edu.java.scrapper.service.daoService.jdbc;
 
 import edu.java.scrapper.controller.linksApi.exception.ChatNotExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkAlreadyExistsException;
 import edu.java.scrapper.controller.linksApi.exception.LinkNotFoundException;
-import edu.java.scrapper.domain.chatLink.jdbcImpl.JdbcChatLinkDao;
-import edu.java.scrapper.domain.link.Link;
-import edu.java.scrapper.domain.link.jdbcImpl.JdbcLinkDao;
-import edu.java.scrapper.domain.tgChat.Chat;
-import edu.java.scrapper.domain.tgChat.jdbcImpl.JdbcTgChatDao;
-import edu.java.scrapper.service.linkService.LinkService;
+import edu.java.scrapper.domain.dto.Chat;
+import edu.java.scrapper.domain.dto.Link;
+import edu.java.scrapper.domain.dao.jdbc.JdbcChatLinkDao;
+import edu.java.scrapper.domain.dao.jdbc.JdbcLinkDao;
+import edu.java.scrapper.domain.dao.jdbc.JdbcTgChatDao;
+import edu.java.scrapper.service.daoService.LinkService;
 import java.net.URI;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
