@@ -1,7 +1,7 @@
-package edu.java.scrapper.service.linkUpdateService.clientUpdate;
+package edu.java.scrapper.service.linkUpdateService.clientUpdate.gitHubClientUpdate;
 
 import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.gitHubClient.RepositoryResponse;
+import edu.java.scrapper.service.client.gitHubClient.dto.IssueResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,23 +11,24 @@ import org.mockito.Mockito;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-public class GitHubClientUpdateTest {
+class GitHubClientUpdateIssueTest {
 
-    GitHubClientUpdateService clientUpdateService;
+    GitHubClientUpdateIssueService clientUpdateService;
     GitHubClient client;
 
     @BeforeEach
     void init() {
         client = Mockito.mock(GitHubClient.class);
-        clientUpdateService = new GitHubClientUpdateService(client);
+        clientUpdateService = new GitHubClientUpdateIssueService(client);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"https://github.com/Space27/JavaBackendSpring/pulls",
+    @ValueSource(strings = {"https://github.com/Space27/JavaBackend-Spring/pulls",
         "https://github.com/Space27/JavaBackendSpring/", "https://github.com/Space27/JavaBackendSpring",
         "https://www.github.com/Space27/JavaBackendSpring/pulls",
         "github.com/Space27/JavaBackendSpring/pulls",
@@ -64,7 +65,7 @@ public class GitHubClientUpdateTest {
     @DisplayName("Поддерживаемые ссылки по формату, но запрос не дает ответ")
     void supports_shouldReturnFalseForSupportedLinkButWithoutResponse() {
         String link = "https://github.com/Space27/JavaBackendSpring";
-        Mockito.when(client.fetchRepository(any(), any())).thenThrow(WebClientResponseException.class);
+        Mockito.when(client.fetchIssues(any(), any())).thenThrow(WebClientResponseException.class);
         URI uri = URI.create(link);
 
         boolean supports = clientUpdateService.supports(uri);
@@ -74,34 +75,23 @@ public class GitHubClientUpdateTest {
     }
 
     @Test
-    @DisplayName("Есть обновление")
+    @DisplayName("Запрос тикетов")
     void handle_shouldReturnNotEmptyStringForUpdate() {
         String link = "https://github.com/Space27/JavaBackendSpring";
         URI uri = URI.create(link);
         OffsetDateTime time = OffsetDateTime.now();
-        RepositoryResponse response = new RepositoryResponse("fr", "fr", uri, time);
-        Mockito.when(client.fetchRepository(any(), any())).thenReturn(response);
+        List<IssueResponse> issueResponses = List.of(
+            new IssueResponse("1", time.minusNanos(1)),
+            new IssueResponse("3", time),
+            new IssueResponse("2", time.plusNanos(1))
+        );
+        Mockito.when(client.fetchIssues(any(), any())).thenReturn(issueResponses);
 
         Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time.minusNanos(1));
 
         assertThat(answer)
             .isNotEmpty()
-            .hasSize(1)
-            .containsValue(time);
-    }
-
-    @Test
-    @DisplayName("Нет обновления")
-    void handle_shouldReturnNullForNotUpdate() {
-        String link = "https://github.com/Space27/JavaBackendSpring";
-        URI uri = URI.create(link);
-        OffsetDateTime time = OffsetDateTime.now();
-        RepositoryResponse response = new RepositoryResponse("fr", "fr", uri, time);
-        Mockito.when(client.fetchRepository(any(), any())).thenReturn(response);
-
-        Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time);
-
-        assertThat(answer)
-            .isEmpty();
+            .hasSize(2)
+            .containsValues(time, time.plusNanos(1));
     }
 }

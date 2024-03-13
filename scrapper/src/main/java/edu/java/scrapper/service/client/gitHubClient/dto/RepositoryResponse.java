@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.client.gitHubClient;
+package edu.java.scrapper.service.client.gitHubClient.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URI;

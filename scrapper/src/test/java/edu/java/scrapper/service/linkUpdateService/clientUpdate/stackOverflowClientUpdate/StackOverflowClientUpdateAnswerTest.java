@@ -1,7 +1,11 @@
-package edu.java.scrapper.service.linkUpdateService.clientUpdate;
+package edu.java.scrapper.service.linkUpdateService.clientUpdate.stackOverflowClientUpdate;
 
-import edu.java.scrapper.service.client.stackOverflowClient.QuestionResponse;
 import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.service.client.stackOverflowClient.dto.AnswerListResponse;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,22 +13,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-public class StackOverflowClientUpdateTest {
+class StackOverflowClientUpdateAnswerTest {
 
-    StackOverflowClientUpdateService clientUpdateService;
+    StackOverflowClientUpdateAnswerService clientUpdateService;
     StackOverflowClient client;
 
     @BeforeEach
     void init() {
         client = Mockito.mock(StackOverflowClient.class);
-        clientUpdateService = new StackOverflowClientUpdateService(client);
+        clientUpdateService = new StackOverflowClientUpdateAnswerService(client);
     }
 
     @ParameterizedTest
@@ -63,7 +63,7 @@ public class StackOverflowClientUpdateTest {
     @DisplayName("Поддерживаемые ссылки по формату, но запрос не дает ответ")
     void supports_shouldReturnFalseForSupportedLinkButWithoutResponse() {
         String link = "https://stackoverflow.com/questions/24117204";
-        Mockito.when(client.fetchQuestion(any())).thenThrow(WebClientResponseException.class);
+        Mockito.when(client.fetchAnswers(any())).thenThrow(WebClientResponseException.class);
         URI uri = URI.create(link);
 
         boolean supports = clientUpdateService.supports(uri);
@@ -73,36 +73,23 @@ public class StackOverflowClientUpdateTest {
     }
 
     @Test
-    @DisplayName("Есть обновление")
+    @DisplayName("Запрос ответов")
     void handle_shouldReturnNotEmptyStringForUpdate() {
         String link = "https://stackoverflow.com/questions/24117204";
         URI uri = URI.create(link);
         OffsetDateTime time = OffsetDateTime.now();
-        QuestionResponse response =
-            new QuestionResponse(List.of(new QuestionResponse.ItemResponse("fr", uri, 1, time)));
-        Mockito.when(client.fetchQuestion(any())).thenReturn(response);
+        List<AnswerListResponse.AnswerResponse> answerResponses = List.of(
+            new AnswerListResponse.AnswerResponse(1,  time.minusNanos(1)),
+            new AnswerListResponse.AnswerResponse(3, time),
+            new AnswerListResponse.AnswerResponse(-2, time.plusNanos(1))
+        );
+        Mockito.when(client.fetchAnswers(any())).thenReturn(new AnswerListResponse(answerResponses));
 
         Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time.minusNanos(1));
 
         assertThat(answer)
             .isNotEmpty()
-            .hasSize(1)
-            .containsValue(time);
-    }
-
-    @Test
-    @DisplayName("Нет обновления")
-    void handle_shouldReturnNullForNotUpdate() {
-        String link = "https://stackoverflow.com/questions/24117204";
-        URI uri = URI.create(link);
-        OffsetDateTime time = OffsetDateTime.now();
-        QuestionResponse response =
-            new QuestionResponse(List.of(new QuestionResponse.ItemResponse("fr", uri, 1, time)));
-        Mockito.when(client.fetchQuestion(any())).thenReturn(response);
-
-        Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time);
-
-        assertThat(answer)
-            .isEmpty();
+            .hasSize(2)
+            .containsValues(time, time.plusNanos(1));
     }
 }

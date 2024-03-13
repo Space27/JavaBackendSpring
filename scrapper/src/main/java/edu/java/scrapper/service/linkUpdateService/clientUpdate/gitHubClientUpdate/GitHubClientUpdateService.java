@@ -1,7 +1,8 @@
-package edu.java.scrapper.service.linkUpdateService.clientUpdate;
+package edu.java.scrapper.service.linkUpdateService.clientUpdate.gitHubClientUpdate;
 
 import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.gitHubClient.RepositoryResponse;
+import edu.java.scrapper.service.client.gitHubClient.dto.RepositoryResponse;
+import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdateService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GitHubClientUpdateService implements ClientUpdateService {
 
-    private static final Pattern REGEX = Pattern.compile("github\\.com/(\\w+)/(\\w+)");
+    private static final Pattern REGEX = Pattern.compile("github\\.com/([\\w-_.]+)/([\\w-_.]+)");
     private static final String UPDATE_ANSWER = "Github: Последнее обновление в %s";
 
     private final GitHubClient client;
