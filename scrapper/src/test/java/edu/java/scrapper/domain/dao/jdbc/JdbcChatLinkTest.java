@@ -121,8 +121,8 @@ class JdbcChatLinkTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    @DisplayName("Каскадное удаление связи")
-    void onRemove_shouldRemoveRelation() {
+    @DisplayName("Каскадное удаление связи по чату")
+    void chatRemove_shouldRemoveRelation() {
         Long chatID = 1L;
         URI url = URI.create("https://edu.tinkoff.ru/");
         chatDao.add(chatID);
@@ -130,6 +130,25 @@ class JdbcChatLinkTest extends IntegrationTest {
         chatLinkDao.add(chatID, link.id());
 
         chatDao.remove(chatID);
+        ChatLink result = jdbcClient.sql("SELECT * FROM chat_link")
+            .query(ChatLink.class).optional().orElse(null);
+
+        assertThat(result)
+            .isNull();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DisplayName("Каскадное удаление связи по ссылке")
+    void linkRemove_shouldRemoveRelation() {
+        Long chatID = 1L;
+        URI url = URI.create("https://edu.tinkoff.ru/");
+        chatDao.add(chatID);
+        Link link = linkDao.add(url);
+        chatLinkDao.add(chatID, link.id());
+
+        linkDao.remove(url);
         ChatLink result = jdbcClient.sql("SELECT * FROM chat_link")
             .query(ChatLink.class).optional().orElse(null);
 

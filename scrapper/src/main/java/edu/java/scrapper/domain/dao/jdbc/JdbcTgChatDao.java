@@ -6,15 +6,22 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcTgChatDao implements TgChatDao {
 
-    private static final String ADD_BY_ID_QUERY = "INSERT INTO chat (id) VALUES (?) ON CONFLICT DO NOTHING";
-    private static final String DELETE_BY_ID_QUERY = "DELETE FROM chat WHERE id = ?";
-    private static final String SELECT_QUERY = "SELECT * FROM chat";
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM chat WHERE id = ?";
+    private static final String ADD_BY_ID_QUERY =
+        "INSERT INTO chat (id) VALUES (?) ON CONFLICT DO NOTHING";
+    private static final String DELETE_CHAT_BY_ID_QUERY =
+        "DELETE FROM chat WHERE id = ?";
+    private static final String DELETE_CHAT_LINKS_BY_ID_QUERY =
+        "DELETE FROM chat_link WHERE chat_id = ?";
+    private static final String SELECT_QUERY =
+        "SELECT * FROM chat";
+    private static final String SELECT_BY_ID_QUERY =
+        "SELECT * FROM chat WHERE id = ?";
 
     private final JdbcClient jdbcClient;
 
@@ -26,8 +33,12 @@ public class JdbcTgChatDao implements TgChatDao {
     }
 
     @Override
+    @Transactional
     public boolean remove(Long chatID) {
-        return jdbcClient.sql(DELETE_BY_ID_QUERY)
+        jdbcClient.sql(DELETE_CHAT_LINKS_BY_ID_QUERY)
+            .param(chatID)
+            .update();
+        return jdbcClient.sql(DELETE_CHAT_BY_ID_QUERY)
             .param(chatID)
             .update() == 1;
     }

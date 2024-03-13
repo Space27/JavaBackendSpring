@@ -26,7 +26,7 @@ public class JdbcChatLinkDao implements ChatLinkDao {
         "SELECT * FROM chat_link WHERE link_id = ?";
     private static final String SELECT_LINKS_BY_CHAT_QUERY =
         "SELECT l.* FROM link l "
-            + "JOIN chat_link ON id = link_id "
+            + "JOIN chat_link ON l.id = link_id "
             + "WHERE chat_id = ?";
     private static final String SELECT_CHATS_BY_LINK_QUERY =
         "SELECT c.* FROM chat c "

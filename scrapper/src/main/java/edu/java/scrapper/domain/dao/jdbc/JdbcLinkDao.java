@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,7 +20,9 @@ public class JdbcLinkDao implements LinkDao {
     private static final String ADD_BY_URL_AND_CHECK_TIME_QUERY =
         "INSERT INTO link (url, last_check_at) VALUES (?, ?) "
             + "ON CONFLICT (url) DO UPDATE SET last_check_at = excluded.last_check_at RETURNING *";
-    private static final String REMOVE_BY_URL_QUERY =
+    private static final String DELETE_CHAT_LINKS_BY_URL_QUERY =
+        "DELETE FROM chat_link WHERE link_id IN (SELECT id from link WHERE url = ?)";
+    private static final String DELETE_LINK_BY_URL_QUERY =
         "DELETE FROM link WHERE url = ? RETURNING *";
     private static final String SELECT_BY_URL_QUERY =
         "SELECT * FROM link WHERE url = ?";
@@ -50,8 +53,12 @@ public class JdbcLinkDao implements LinkDao {
     }
 
     @Override
+    @Transactional
     public Link remove(URI url) {
-        return jdbcClient.sql(REMOVE_BY_URL_QUERY)
+        jdbcClient.sql(DELETE_CHAT_LINKS_BY_URL_QUERY)
+            .param(url.toString())
+            .update();
+        return jdbcClient.sql(DELETE_LINK_BY_URL_QUERY)
             .param(url.toString())
             .query(Link.class)
             .optional().orElse(null);
