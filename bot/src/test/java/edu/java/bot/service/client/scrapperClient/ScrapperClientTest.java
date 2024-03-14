@@ -50,7 +50,9 @@ class ScrapperClientTest {
     void addChat_shouldWorkWithIncorrectRequestAndThrowExceptionWithApiErrorResponse() {
         ApiErrorResponse expected = new ApiErrorResponse("desc", "code", "excep", "message", List.of());
         stubFor(post("/tg-chat/1")
-            .willReturn(badRequest().withBody(asJsonString(expected))));
+            .willReturn(badRequest()
+                .withHeader("Content-Type", "application/json")
+                .withBody(asJsonString(expected))));
 
         ApiErrorResponse result = assertThrows(ResponseErrorException.class, () -> client.addChat(1L))
             .getApiErrorResponse();
@@ -64,7 +66,7 @@ class ScrapperClientTest {
     @DisplayName("Регистрация чата с некорректным ответом ошибки")
     void addChat_shouldWorkWithIncorrectRequestAndThrowExceptionWithNullForUnexpectedAnswer() {
         stubFor(post("/tg-chat/1")
-            .willReturn(badRequest().withBody("")));
+            .willReturn(badRequest().withHeader("Content-Type", "application/json").withBody("")));
 
         ApiErrorResponse result = assertThrows(ResponseErrorException.class, () -> client.addChat(1L))
             .getApiErrorResponse();
@@ -85,7 +87,9 @@ class ScrapperClientTest {
     @DisplayName("Некорректный запрос удаления чата")
     void deleteChat_shouldWorkWithIncorrectRequestAndThrowExceptionWithApiErrorResponse() {
         ApiErrorResponse expected = new ApiErrorResponse("desc", "code", "excep", "message", List.of());
-        stubFor(delete("/tg-chat/1").willReturn(badRequest().withBody(asJsonString(expected))));
+        stubFor(delete("/tg-chat/1").willReturn(badRequest()
+            .withHeader("Content-Type", "application/json")
+            .withBody(asJsonString(expected))));
 
         ApiErrorResponse result = assertThrows(ResponseErrorException.class, () -> client.deleteChat(1L))
             .getApiErrorResponse();
@@ -116,7 +120,8 @@ class ScrapperClientTest {
         LinkResponse expected = new LinkResponse(1L, URI.create("https://github.com/"));
         stubFor(post("/links").withHeader("Tg-Chat-Id", containing("3")).willReturn(okJson(asJsonString(expected))));
 
-        LinkResponse answer = Assertions.assertDoesNotThrow(() -> client.addLink(3L, URI.create("https://github.com/")));
+        LinkResponse answer =
+            Assertions.assertDoesNotThrow(() -> client.addLink(3L, URI.create("https://github.com/")));
 
         assertThat(answer)
             .isEqualTo(expected);
@@ -128,7 +133,8 @@ class ScrapperClientTest {
         LinkResponse expected = new LinkResponse(1L, URI.create("https://github.com/"));
         stubFor(delete("/links").withHeader("Tg-Chat-Id", containing("3")).willReturn(okJson(asJsonString(expected))));
 
-        LinkResponse answer = Assertions.assertDoesNotThrow(() -> client.removeLink(3L, URI.create("https://github.com/")));
+        LinkResponse answer =
+            Assertions.assertDoesNotThrow(() -> client.removeLink(3L, URI.create("https://github.com/")));
 
         assertThat(answer)
             .isEqualTo(expected);

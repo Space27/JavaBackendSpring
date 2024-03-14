@@ -1,5 +1,7 @@
 package edu.java.bot.service.client.scrapperClient;
 
+import edu.java.bot.service.client.scrapperClient.request.AddLinkRequest;
+import edu.java.bot.service.client.scrapperClient.request.RemoveLinkRequest;
 import edu.java.bot.service.client.scrapperClient.response.LinkResponse;
 import edu.java.bot.service.client.scrapperClient.response.ListLinkResponse;
 import java.net.URI;
@@ -22,8 +24,16 @@ public interface ScrapperClient {
     ListLinkResponse getLinks(@RequestHeader("Tg-Chat-Id") Long id);
 
     @PostExchange("/links")
-    LinkResponse addLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody URI link);
+    LinkResponse addLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody AddLinkRequest addLinkRequest);
 
     @DeleteExchange("/links")
-    LinkResponse removeLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody URI link);
+    LinkResponse removeLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody RemoveLinkRequest removeLinkRequest);
+
+    default LinkResponse removeLink(Long id, URI link) {
+        return removeLink(id, new RemoveLinkRequest(link));
+    }
+
+    default LinkResponse addLink(Long id, URI link) {
+        return addLink(id, new AddLinkRequest(link));
+    }
 }
