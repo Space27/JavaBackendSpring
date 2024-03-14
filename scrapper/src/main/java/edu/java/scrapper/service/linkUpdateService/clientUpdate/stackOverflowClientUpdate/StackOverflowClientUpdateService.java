@@ -1,7 +1,8 @@
-package edu.java.scrapper.service.linkUpdateService.clientUpdate;
+package edu.java.scrapper.service.linkUpdateService.clientUpdate.stackOverflowClientUpdate;
 
-import edu.java.scrapper.service.client.stackOverflowClient.QuestionResponse;
 import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.service.client.stackOverflowClient.dto.QuestionResponse;
+import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdateService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Map;

@@ -3,6 +3,7 @@ package edu.java.scrapper.service.client.stackOverflowClient;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.configuration.ClientConfiguration;
+import edu.java.scrapper.service.client.stackOverflowClient.dto.QuestionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

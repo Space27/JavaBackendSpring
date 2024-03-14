@@ -1,5 +1,6 @@
 package edu.java.scrapper.service.client.gitHubClient;
 
+import edu.java.scrapper.service.client.gitHubClient.dto.RepositoryResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
 

@@ -1,7 +1,11 @@
-package edu.java.scrapper.service.linkUpdateService.clientUpdate;
+package edu.java.scrapper.service.linkUpdateService.clientUpdate.stackOverflowClientUpdate;
 
-import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.gitHubClient.RepositoryResponse;
+import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.service.client.stackOverflowClient.dto.QuestionResponse;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,30 +13,26 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-public class GitHubClientUpdateTest {
+public class StackOverflowClientUpdateTest {
 
-    GitHubClientUpdateService clientUpdateService;
-    GitHubClient client;
+    StackOverflowClientUpdateService clientUpdateService;
+    StackOverflowClient client;
 
     @BeforeEach
     void init() {
-        client = Mockito.mock(GitHubClient.class);
-        clientUpdateService = new GitHubClientUpdateService(client);
+        client = Mockito.mock(StackOverflowClient.class);
+        clientUpdateService = new StackOverflowClientUpdateService(client);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"https://github.com/Space27/JavaBackendSpring/pulls",
-        "https://github.com/Space27/JavaBackendSpring/", "https://github.com/Space27/JavaBackendSpring",
-        "https://www.github.com/Space27/JavaBackendSpring/pulls",
-        "github.com/Space27/JavaBackendSpring/pulls",
-        "https://www.github.com/Space27/JavaBackendSpring/pulls",
-        "https://github.com/S/J/pulls"})
+    @ValueSource(strings = {"https://stackoverflow.com/questions/24117204/algorithm-for-simple-squared-squares",
+        "https://stackoverflow.com/questions/24117204/", "https://stackoverflow.com/questions/24117204",
+        "https://www.stackoverflow.com/questions/24117204/algorithm-for-simple-squared-squares",
+        "https://stackoverflow.com/questions/2/algorithm-for-simple-squared-squares",
+        "stackoverflow.com/questions/24117204/algorithm-for-simple-squared-squares"})
     @DisplayName("Поддерживаемые ссылки")
     void supports_shouldReturnTrueForSupportedLink(String link) {
         URI uri = URI.create(link);
@@ -44,12 +44,11 @@ public class GitHubClientUpdateTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"https://github.co/Space27/JavaBackendSpring/pulls",
-        "https://githu.com/Space27/JavaBackendSpring/", "https://ithub.com/Space27/JavaBackendSpring",
-        "https://www.githubcom/Space27/JavaBackendSpring/pulls",
-        "github.com/Space27/",
-        "https://www.github.com//JavaBackendSpring/pulls",
-        "https://github.com/S"})
+    @ValueSource(strings = {"https://stackoverflow.com/questions/",
+        "https://stackoverflow.co/questions/24117204/", "https://stackoverflow.com/question/24117204/",
+        "https://stackoverflowcom/questions/24117204/",
+        "https://stackoverflo.com/questions/24117204/",
+        "https://tackoverflow.com/questions/24117204/"})
     @DisplayName("Неподдерживаемый формат ссылки")
     void supports_shouldReturnFalseForUnsupportedFormatLink(String link) {
         URI uri = URI.create(link);
@@ -63,8 +62,8 @@ public class GitHubClientUpdateTest {
     @Test
     @DisplayName("Поддерживаемые ссылки по формату, но запрос не дает ответ")
     void supports_shouldReturnFalseForSupportedLinkButWithoutResponse() {
-        String link = "https://github.com/Space27/JavaBackendSpring";
-        Mockito.when(client.fetchRepository(any(), any())).thenThrow(WebClientResponseException.class);
+        String link = "https://stackoverflow.com/questions/24117204";
+        Mockito.when(client.fetchQuestion(any())).thenThrow(WebClientResponseException.class);
         URI uri = URI.create(link);
 
         boolean supports = clientUpdateService.supports(uri);
@@ -76,11 +75,12 @@ public class GitHubClientUpdateTest {
     @Test
     @DisplayName("Есть обновление")
     void handle_shouldReturnNotEmptyStringForUpdate() {
-        String link = "https://github.com/Space27/JavaBackendSpring";
+        String link = "https://stackoverflow.com/questions/24117204";
         URI uri = URI.create(link);
         OffsetDateTime time = OffsetDateTime.now();
-        RepositoryResponse response = new RepositoryResponse("fr", "fr", uri, time);
-        Mockito.when(client.fetchRepository(any(), any())).thenReturn(response);
+        QuestionResponse response =
+            new QuestionResponse(List.of(new QuestionResponse.ItemResponse("fr", uri, 1, time)));
+        Mockito.when(client.fetchQuestion(any())).thenReturn(response);
 
         Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time.minusNanos(1));
 
@@ -93,11 +93,12 @@ public class GitHubClientUpdateTest {
     @Test
     @DisplayName("Нет обновления")
     void handle_shouldReturnNullForNotUpdate() {
-        String link = "https://github.com/Space27/JavaBackendSpring";
+        String link = "https://stackoverflow.com/questions/24117204";
         URI uri = URI.create(link);
         OffsetDateTime time = OffsetDateTime.now();
-        RepositoryResponse response = new RepositoryResponse("fr", "fr", uri, time);
-        Mockito.when(client.fetchRepository(any(), any())).thenReturn(response);
+        QuestionResponse response =
+            new QuestionResponse(List.of(new QuestionResponse.ItemResponse("fr", uri, 1, time)));
+        Mockito.when(client.fetchQuestion(any())).thenReturn(response);
 
         Map<String, OffsetDateTime> answer = clientUpdateService.handle(uri, time);
 

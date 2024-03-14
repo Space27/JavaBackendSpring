@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class StartCommand implements Command {
+public class EndCommand implements Command {
 
-    private static final String COMMAND = "/start";
-    private static final String DESCRIPTION = "Начать работу с ботом";
-    private static final String ALREADY_REGISTERED = "Вы уже зарегистрированы в системе!";
-    private static final String COMMON_MESSAGE = "Поздравляю, %s, Вы можете начинать отслеживание ссылок!";
+    private static final String COMMAND = "/end";
+    private static final String DESCRIPTION = "Завершить работу с ботом";
+    private static final String NOT_REGISTERED = "Вы не зарегистрированы в системе!";
+    private static final String COMMON_MESSAGE = "Работа с ботом завершена. Ждём вас снова!";
 
     private final ChatService chatService;
 
@@ -23,10 +23,10 @@ public class StartCommand implements Command {
         Chat chat = update.message().chat();
         String result;
 
-        if (chatService.register(chat.id())) {
-            result = String.format(COMMON_MESSAGE, chat.firstName());
+        if (chatService.unregister(chat.id())) {
+            result = COMMON_MESSAGE;
         } else {
-            result = ALREADY_REGISTERED;
+            result = NOT_REGISTERED;
         }
 
         return new SendMessage(chat.id(), result);
