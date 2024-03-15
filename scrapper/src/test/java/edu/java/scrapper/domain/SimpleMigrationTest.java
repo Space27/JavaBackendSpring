@@ -24,11 +24,16 @@ class SimpleMigrationTest extends IntegrationTest {
         )) {
             String insertQuery = "insert into chat values(1, '2007-12-03T10:15:30+01:00')";
             String selectQuery = "select * from chat";
+
+            String deleteQuery = "delete from chat where id = 1";
             PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
             PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+            PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
 
             assertDoesNotThrow(() -> insertStatement.execute());
             assertDoesNotThrow(() -> selectStatement.execute());
+            assertDoesNotThrow(() -> deleteStatement.execute());
+
             ResultSet resultSet = selectStatement.getResultSet();
             resultSet.next();
 
