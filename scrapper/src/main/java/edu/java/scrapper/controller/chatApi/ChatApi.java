@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +24,7 @@ public interface ChatApi {
                      description = "Чат уже зарегистрирован",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))})
-    ResponseEntity<Void> addChat(@PathVariable @NotNull @Positive Long id);
+    void addChat(@PathVariable @NotNull @Positive Long id);
 
     @DeleteMapping("/{id}")
     @ApiResponses(value = {
@@ -38,5 +37,5 @@ public interface ChatApi {
                      description = "Чат не существует",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))})
-    ResponseEntity<Void> deleteChat(@PathVariable @NotNull @Positive Long id);
+    void deleteChat(@PathVariable @NotNull @Positive Long id);
 }
