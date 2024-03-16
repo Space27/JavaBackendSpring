@@ -2,10 +2,10 @@ package edu.java.scrapper.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.scrapper.controller.response.ApiErrorResponse;
-import edu.java.scrapper.service.client.botClient.BotClient;
-import edu.java.scrapper.service.client.botClient.ResponseErrorException;
-import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
+import edu.java.scrapper.service.client.bot.BotClient;
+import edu.java.scrapper.service.client.bot.ResponseErrorException;
+import edu.java.scrapper.service.client.gitHub.GitHubClient;
+import edu.java.scrapper.service.client.stackOverflow.StackOverflowClient;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class JdbcLinkService implements LinkService {
     private final JdbcChatLinkDao chatLinkDao;
 
     @Override
+    @Transactional
     public Link add(Long chatId, URI url) throws ChatNotExistsException, LinkAlreadyExistsException {
         chatExists(chatId);
 
@@ -36,6 +38,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Link remove(Long chatId, URI url) throws ChatNotExistsException, LinkNotFoundException {
         chatExists(chatId);
 
@@ -49,6 +52,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Collection<Link> listAll(Long chatId) throws ChatNotExistsException {
         chatExists(chatId);
 

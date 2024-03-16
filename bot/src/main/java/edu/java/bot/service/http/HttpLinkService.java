@@ -1,9 +1,9 @@
 package edu.java.bot.service.http;
 
 import edu.java.bot.service.LinkService;
-import edu.java.bot.service.client.scrapperClient.ResponseErrorException;
-import edu.java.bot.service.client.scrapperClient.ScrapperClient;
-import edu.java.bot.service.client.scrapperClient.response.LinkResponse;
+import edu.java.bot.service.client.scrapper.ResponseErrorException;
+import edu.java.bot.service.client.scrapper.ScrapperClient;
+import edu.java.bot.service.client.scrapper.response.LinkResponse;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

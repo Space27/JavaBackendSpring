@@ -1,6 +1,6 @@
-package edu.java.scrapper.service.client.botClient;
+package edu.java.scrapper.service.client.bot;
 
-import edu.java.scrapper.service.client.botClient.request.LinkUpdateRequest;
+import edu.java.scrapper.service.client.bot.request.LinkUpdateRequest;
 import java.net.URI;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestBody;

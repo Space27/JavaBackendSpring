@@ -1,6 +1,6 @@
-package edu.java.bot.service.client.scrapperClient;
+package edu.java.scrapper.service.client.bot;
 
-import edu.java.bot.controller.response.ApiErrorResponse;
+import edu.java.scrapper.controller.response.ApiErrorResponse;
 import lombok.Getter;
 
 @Getter

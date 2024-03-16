@@ -1,7 +1,7 @@
 package edu.java.scrapper.service.linkUpdateService.clientUpdate.gitHubClientUpdate;
 
-import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.gitHubClient.dto.RepositoryResponse;
+import edu.java.scrapper.service.client.gitHub.GitHubClient;
+import edu.java.scrapper.service.client.gitHub.dto.RepositoryResponse;
 import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdateService;
 import java.net.URI;
 import java.time.OffsetDateTime;
