@@ -2,36 +2,32 @@ package edu.java.scrapper.domain.dao.jpa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "chat_link", uniqueConstraints = {@UniqueConstraint(columnNames = {"chat_id", "link_id"})})
-@EntityListeners(AuditingEntityListener.class)
 public class ChatLinkEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamp with time zone")
-    private Instant createdAt;
+    private OffsetDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
@@ -44,5 +40,12 @@ public class ChatLinkEntity {
     public ChatLinkEntity(ChatEntity chat, LinkEntity link) {
         this.chat = chat;
         this.link = link;
+    }
+
+    @PrePersist
+    private void beforeInit() {
+        if (createdAt == null) {
+            createdAt = OffsetDateTime.now().withNano(0);
+        }
     }
 }

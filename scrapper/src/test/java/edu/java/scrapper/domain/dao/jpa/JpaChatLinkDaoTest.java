@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest
+@SpringBootTest(properties = { "app.database-access-type=jpa" })
 public class JpaChatLinkDaoTest extends IntegrationTest {
 
     @Autowired
@@ -87,6 +87,37 @@ public class JpaChatLinkDaoTest extends IntegrationTest {
         ChatLink result = jdbcClient.sql("SELECT * FROM chat_link")
             .query(ChatLink.class).optional().orElse(null);
 
+        assertThat(result)
+            .isNull();
+        assertThat(chatDao.findById(chatID))
+            .isNotEmpty();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DisplayName("Удаление связи по чату и ссылке")
+    void deleteByChatAndLink_shouldRemoveRelation() {
+        Long chatID = 1L;
+        URI url = URI.create("https://edu.tinkoff.ru/");
+        ChatEntity chat = new ChatEntity();
+        LinkEntity link = new LinkEntity();
+        chat.setId(chatID);
+        link.setUrl(url.toString());
+        chatDao.saveAndFlush(chat);
+        linkDao.saveAndFlush(link);
+        ChatLinkEntity chatLink = new ChatLinkEntity();
+        chatLink.setChat(chat);
+        chatLink.setLink(link);
+        chatLinkDao.saveAndFlush(chatLink);
+
+        Long removedRows = chatLinkDao.deleteByChatAndLink(chat, link);
+        chatLinkDao.flush();
+        ChatLink result = jdbcClient.sql("SELECT * FROM chat_link")
+            .query(ChatLink.class).optional().orElse(null);
+
+        assertThat(removedRows)
+            .isOne();
         assertThat(result)
             .isNull();
         assertThat(chatDao.findById(chatID))

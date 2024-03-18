@@ -12,10 +12,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class JooqLinkUpdater implements LinkUpdater {
 
@@ -25,6 +24,7 @@ public class JooqLinkUpdater implements LinkUpdater {
     private final JooqChatLinkDao chatLinkDao;
 
     @Override
+    @Transactional
     public int update() {
         OffsetDateTime checkTime = OffsetDateTime.now().withNano(0);
         int updatedLinksAmount = 0;

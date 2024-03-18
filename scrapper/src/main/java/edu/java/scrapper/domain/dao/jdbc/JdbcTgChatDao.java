@@ -5,10 +5,8 @@ import edu.java.scrapper.domain.dto.Chat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcTgChatDao implements TgChatDao {
 

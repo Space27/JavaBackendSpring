@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@SpringBootTest(properties = { "app.database-access-type=jpa" })
 public class JpaLinkDaoTest extends IntegrationTest {
 
     @Autowired
@@ -82,7 +82,7 @@ public class JpaLinkDaoTest extends IntegrationTest {
         linkDao.saveAndFlush(link);
 
         link = linkDao.findByUrl(url.toString()).orElse(null);
-        link.setLastCheckAt(time.toInstant());
+        link.setLastCheckAt(time);
         linkDao.saveAndFlush(link);
         Link result = jdbcClient.sql("SELECT * FROM link")
             .query(Link.class).single();
@@ -228,11 +228,11 @@ public class JpaLinkDaoTest extends IntegrationTest {
             link.setUrl(entry.getKey().toString());
             linkDao.saveAndFlush(link);
             link = linkDao.findByUrl(entry.getKey().toString()).orElse(null);
-            link.setLastCheckAt(entry.getValue().toInstant());
+            link.setLastCheckAt(entry.getValue());
             linkDao.saveAndFlush(link);
         }
 
-        List<LinkEntity> result = linkDao.findLinkEntitiesByLastCheckAtLessThanEqual(base.toInstant());
+        List<LinkEntity> result = linkDao.findLinkEntitiesByLastCheckAtLessThanEqual(base);
 
         assertThat(result)
             .isNotNull()
