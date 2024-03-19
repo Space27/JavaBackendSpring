@@ -62,21 +62,22 @@ public class ChatLink extends TableImpl<Record> {
         createField(DSL.name("ID"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>CHAT_LINK.LINK_ID</code>.
-     */
-    public final TableField<Record, Long> LINK_ID =
-        createField(DSL.name("LINK_ID"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
      * The column <code>CHAT_LINK.CHAT_ID</code>.
      */
     public final TableField<Record, Long> CHAT_ID =
         createField(DSL.name("CHAT_ID"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
+     * The column <code>CHAT_LINK.LINK_ID</code>.
+     */
+    public final TableField<Record, Long> LINK_ID =
+        createField(DSL.name("LINK_ID"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
      * The column <code>CHAT_LINK.CREATED_AT</code>.
      */
-    public final TableField<Record, OffsetDateTime> CREATED_AT = createField(DSL.name("CREATED_AT"),
+    public final TableField<Record, OffsetDateTime> CREATED_AT = createField(
+        DSL.name("CREATED_AT"),
         SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false)
             .defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.TIMESTAMPWITHTIMEZONE)),
         this,

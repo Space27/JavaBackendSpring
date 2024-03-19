@@ -4,7 +4,6 @@ import edu.java.scrapper.domain.dao.jpa.entity.ChatEntity;
 import edu.java.scrapper.domain.dao.jpa.entity.ChatLinkEntity;
 import edu.java.scrapper.domain.dao.jpa.entity.LinkEntity;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

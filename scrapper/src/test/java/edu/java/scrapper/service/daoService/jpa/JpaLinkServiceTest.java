@@ -9,7 +9,6 @@ import edu.java.scrapper.domain.dao.jpa.JpaTgChatDao;
 import edu.java.scrapper.domain.dao.jpa.entity.ChatEntity;
 import edu.java.scrapper.domain.dao.jpa.entity.ChatLinkEntity;
 import edu.java.scrapper.domain.dao.jpa.entity.LinkEntity;
-import edu.java.scrapper.domain.dto.Chat;
 import edu.java.scrapper.domain.dto.Link;
 import java.net.URI;
 import java.time.OffsetDateTime;

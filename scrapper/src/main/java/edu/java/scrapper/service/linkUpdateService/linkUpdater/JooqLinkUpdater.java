@@ -31,7 +31,7 @@ public class JooqLinkUpdater implements LinkUpdater {
         List<Link> linksToCheck = linkDao.findAll(checkTime.minus(MIN_INTERVAL));
 
         for (Link link : linksToCheck) {
-            Map<String, OffsetDateTime> descriptions = clientUpdater.handle(link.url(), checkTime);
+            Map<String, OffsetDateTime> descriptions = clientUpdater.handle(link.url(), link.lastCheckAt());
 
             if (!descriptions.isEmpty()) {
                 ++updatedLinksAmount;

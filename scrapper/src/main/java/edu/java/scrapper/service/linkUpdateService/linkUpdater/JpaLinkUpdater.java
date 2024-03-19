@@ -32,7 +32,8 @@ public class JpaLinkUpdater implements LinkUpdater {
             linkDao.findLinkEntitiesByLastCheckAtLessThanEqual(checkTime.minus(MIN_INTERVAL));
 
         for (LinkEntity link : linksToCheck) {
-            Map<String, OffsetDateTime> descriptions = clientUpdater.handle(URI.create(link.getUrl()), checkTime);
+            Map<String, OffsetDateTime> descriptions =
+                clientUpdater.handle(URI.create(link.getUrl()), link.getLastCheckAt());
 
             if (!descriptions.isEmpty()) {
                 ++updatedLinksAmount;
