@@ -6,52 +6,33 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HelpCommand implements Command {
 
     private static final String COMMAND = "/help";
     private static final String DESCRIPTION = "Вывести список команд";
-    private List<BotCommand> commandList;
+    private final List<BotCommand> commandList;
 
     public HelpCommand(List<Command> commands) {
-        this.commandList = commands.stream()
+        this.commandList = Stream.concat(commands.stream(), Stream.of(this))
+            .distinct()
             .map(Command::botCommand)
             .toList();
-    }
-
-    public void setCommands(List<Command> commands) {
-        this.commandList = commands.stream()
-            .map(Command::botCommand)
-            .toList();
-    }
-
-    public void addCommand(Command command) {
-        if (command == null) {
-            return;
-        }
-
-        addCommand(command.botCommand());
-    }
-
-    public void addCommand(BotCommand command) {
-        if (command == null) {
-            return;
-        }
-
-        commandList.add(command);
     }
 
     @Override
     public SendMessage execute(Update update) {
         Chat chat = update.message().chat();
 
-        StringBuilder message = new StringBuilder("*Список команд*\n\n");
+        String message = "*Список команд*\n\n" + commandList.stream()
+            .map(command -> command.command() + " - " + command.description())
+            .collect(Collectors.joining("\n"));
 
-        for (BotCommand command : commandList) {
-            message.append(command.command()).append(" - ").append(command.description()).append('\n');
-        }
-
-        return new SendMessage(chat.id(), message.toString())
+        return new SendMessage(chat.id(), message)
             .parseMode(ParseMode.Markdown);
     }
 
