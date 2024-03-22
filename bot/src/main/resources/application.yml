@@ -1,5 +1,6 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
+  max-bucket-size: 10
 
 api:
   scrapper:
