@@ -14,7 +14,10 @@ public record ApplicationConfig(
     Scheduler scheduler,
 
     @NotNull
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+
+    @NotNull
+    Integer maxBucketSize
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }

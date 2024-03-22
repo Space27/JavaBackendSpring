@@ -4,6 +4,7 @@ app:
     interval: 10s
     force-check-delay: 10s
   database-access-type: jdbc
+  max-bucket-size: 10
 
 api:
   bot:
