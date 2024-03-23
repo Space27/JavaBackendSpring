@@ -1,6 +1,17 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
   max-bucket-size: 10
+  retry-config:
+    max-attempts: 3
+    delay-type: fixed
+    delay-time: 10s
+    response-codes:
+      - 502
+      - 503
+      - 504
+      - 506
+      - 507
+      - 429
 
 api:
   scrapper:
