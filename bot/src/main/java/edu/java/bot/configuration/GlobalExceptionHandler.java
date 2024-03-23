@@ -1,5 +1,6 @@
 package edu.java.bot.configuration;
 
+import edu.java.bot.controller.interceptor.exception.TooManyRequestsException;
 import edu.java.bot.controller.response.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.Arrays;
@@ -29,6 +30,23 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest()
+            .body(apiErrorResponse);
+    }
+
+    @ExceptionHandler({TooManyRequestsException.class})
+    public ResponseEntity<ApiErrorResponse> handleTooManyRequestsException(
+        TooManyRequestsException ex,
+        WebRequest request
+    ) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+            "Превышено допустимое число запросов. Попробуйте позже",
+            String.valueOf(HttpStatus.TOO_MANY_REQUESTS.value()),
+            ex.getClass().getSimpleName(),
+            ex.getMessage(),
+            Arrays.stream(ex.getStackTrace()).map(StackTraceElement::toString).toList()
+        );
+
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
             .body(apiErrorResponse);
     }
 }
