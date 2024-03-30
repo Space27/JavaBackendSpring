@@ -1,8 +1,8 @@
 package edu.java.scrapper.service.linkUpdateService;
 
 import edu.java.scrapper.domain.dto.Link;
-import edu.java.scrapper.service.client.botClient.BotClient;
-import edu.java.scrapper.service.client.botClient.ResponseErrorException;
+import edu.java.scrapper.service.client.botClient.request.LinkUpdateRequest;
+import edu.java.scrapper.service.linkUpdateService.linkUpdateSender.LinkUpdateSender;
 import edu.java.scrapper.util.MessageDispatcherUtils;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BotService {
 
-    private final BotClient botClient;
+    private final LinkUpdateSender linkUpdateSender;
 
     public void sendMessagesByUpdateTime(
         Link link,
@@ -26,13 +26,9 @@ public class BotService {
         Map<String, List<Long>> groupedMessages = MessageDispatcherUtils.groupMessagesForChats(messages, chats);
 
         for (var group : groupedMessages.entrySet()) {
-            try {
-                botClient.updateLink(link.id(), link.url(), group.getKey(), group.getValue());
-            } catch (ResponseErrorException e) {
-                log.error("Bot Client error while link updating", e);
-            } catch (Exception e) {
-                log.error("Unhandled Bot Client exception while link updating", e);
-            }
+            LinkUpdateRequest linkUpdateRequest =
+                new LinkUpdateRequest(link.id(), link.url(), group.getKey(), group.getValue());
+            linkUpdateSender.send(linkUpdateRequest);
         }
     }
 }

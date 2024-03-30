@@ -44,7 +44,9 @@ class StackOverflowClientTest {
                 ApplicationConfig.RetryConfig.DelayType.FIXED,
                 Duration.ofSeconds(1),
                 List.of(502)
-            )
+            ),
+            null,
+            null
         );
         ClientConfiguration clientConfiguration = new ClientConfiguration(applicationConfig);
 

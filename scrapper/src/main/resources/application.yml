@@ -16,6 +16,11 @@ app:
       - 506
       - 507
       - 429
+  bot-topic:
+    name: link-update
+    partitions: 2
+    replicas: 1
+  use-queue: false
 
 api:
   bot:
@@ -38,6 +43,11 @@ spring:
     show-sql: true
   liquibase:
     enabled: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 8080
