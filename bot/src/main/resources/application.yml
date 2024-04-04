@@ -12,6 +12,9 @@ app:
       - 506
       - 507
       - 429
+  scrapper-topic:
+    name: link-update
+  use-queue: false
 
 api:
   scrapper:
@@ -22,6 +25,41 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  liquibase:
+    enabled: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: "link-update-1"
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      enable-auto-commit: false
+    properties:
+      spring:
+        deserializer:
+          value:
+            delegate:
+              class: org.springframework.kafka.support.serializer.JsonDeserializer
+          key:
+            delegate:
+              class: org.apache.kafka.common.serialization.StringDeserializer
+        json:
+          value:
+            default:
+              type: edu.java.bot.controller.request.LinkUpdateRequest
+          trusted:
+            packages: "*"
+          use:
+            type:
+              info:
+                headers: false
+    listener:
+      ack-mode: manual
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 
 server:
   port: 8090

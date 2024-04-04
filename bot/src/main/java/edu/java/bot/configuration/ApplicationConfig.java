@@ -18,8 +18,13 @@ public record ApplicationConfig(
     Integer maxBucketSize,
 
     @NotNull
-    RetryConfig retryConfig
+    RetryConfig retryConfig,
 
+    @NotNull
+    Topic scrapperTopic,
+
+    @NotNull
+    Boolean useQueue
 ) {
     public record RetryConfig(@NotNull @Positive Integer maxAttempts, @NotNull DelayType delayType,
                               @NotNull Duration delayTime, @NotNull @NotEmpty List<Integer> responseCodes) {
@@ -27,5 +32,8 @@ public record ApplicationConfig(
             FIXED,
             EXPONENTIAL
         }
+    }
+
+    public record Topic(@NotNull @NotEmpty String name) {
     }
 }
