@@ -69,11 +69,41 @@ services:
     depends_on:
       - zoo
 
+  grafana:
+    image: grafana/grafana-oss:10.1.9
+    container_name: grafana
+    hostname: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_storage:/var/lib/grafana
+    networks:
+      - backend
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
+    networks:
+      - backend
+
 volumes:
   postgresql: { }
   zoo_data: { }
   zoo_log: { }
   kafka1: { }
+  grafana_storage: { }
+  prometheus: { }
 
 networks:
   backend: { }
