@@ -50,6 +50,11 @@
 
         <!-- Bucket -->
         <bucket.version>8.9.0</bucket.version>
+
+        <!-- Metrics -->
+        <spring-actuator.version>3.2.4</spring-actuator.version>
+        <micrometr-prometheus.version>1.12.4</micrometr-prometheus.version>
+        <micrometr-tracing.version>1.2.4</micrometr-tracing.version>
     </properties>
 
     <modules>
@@ -156,6 +161,23 @@
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta-extensions-liquibase</artifactId>
             <version>${jooq.version}</version>
+        </dependency>
+
+        <!-- Metrics -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring-actuator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometr-prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+            <version>${micrometr-tracing.version}</version>
         </dependency>
     </dependencies>
 
