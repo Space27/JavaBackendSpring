@@ -15,7 +15,7 @@ public class UpdateParserUtil {
 
         for (Long chatID : linkUpdateRequest.tgChatIds()) {
             String message = String.format(
-                "*Пришло обновление!*\n\nСсылка: %s\nОбновление: %s",
+                "*Пришло обновление!*\n\nСсылка: %s\n%s",
                 linkUpdateRequest.url(),
                 linkUpdateRequest.description()
             );

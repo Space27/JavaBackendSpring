@@ -4,40 +4,38 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.repository.LinkRepository;
+import edu.java.bot.service.LinkService;
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class ListCommand implements Command {
 
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "Вывести список отслеживаемых ссылок";
     private static final String NOT_STARTED = "Вы не зарегистрированы в системе!";
-    private final LinkRepository storage;
+    private static final String EMPTY_LIST = "У Вас нет отслеживаемых ссылок!";
 
-    public ListCommand(LinkRepository linkRepository) {
-        this.storage = linkRepository;
-    }
+    private final LinkService linkService;
 
     @Override
     public SendMessage execute(Update update) {
         Chat chat = update.message().chat();
-        if (!storage.contains(chat.id())) {
-            return new SendMessage(chat.id(), NOT_STARTED);
-        }
 
-        List<String> links = storage.get(chat.id());
         String result;
-
-        if (links != null && !links.isEmpty()) {
-            StringBuilder message = new StringBuilder("*Список ссылок*\n\n");
-
-            for (String link : links) {
-                message.append("- ").append(link).append('\n');
-            }
-
-            result = message.toString();
+        List<URI> links = linkService.getLinks(chat.id());
+        if (links == null) {
+            result = NOT_STARTED;
+        } else if (links.isEmpty()) {
+            result = EMPTY_LIST;
         } else {
-            result = "У Вас нет отслеживаемых ссылок!";
+            result = "*Список ссылок*\n\n" + links.stream()
+                .map(link -> "- " + link.toString())
+                .collect(Collectors.joining("\n"));
         }
 
         return new SendMessage(chat.id(), result)

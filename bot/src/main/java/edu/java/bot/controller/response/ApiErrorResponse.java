@@ -7,4 +7,8 @@ public record ApiErrorResponse(String description,
                                String exceptionName,
                                String exceptionMessage,
                                List<String> stacktrace) {
+
+    public ApiErrorResponse() {
+        this(null, null, null, null, null);
+    }
 }
