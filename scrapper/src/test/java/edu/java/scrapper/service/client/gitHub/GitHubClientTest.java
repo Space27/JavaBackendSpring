@@ -1,12 +1,12 @@
-package edu.java.scrapper.service.client.gitHubClient;
+package edu.java.scrapper.service.client.gitHub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.configuration.ClientConfiguration;
-import edu.java.scrapper.service.client.gitHubClient.dto.IssueResponse;
-import edu.java.scrapper.service.client.gitHubClient.dto.RepositoryResponse;
+import edu.java.scrapper.service.client.gitHub.dto.IssueResponse;
+import edu.java.scrapper.service.client.gitHub.dto.RepositoryResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

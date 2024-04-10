@@ -1,20 +1,20 @@
-package edu.java.scrapper.service.client.stackOverflowClient;
+package edu.java.scrapper.service.client.stackOverflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.configuration.ClientConfiguration;
-import edu.java.scrapper.service.client.stackOverflowClient.dto.AnswerListResponse;
-import edu.java.scrapper.service.client.stackOverflowClient.dto.QuestionResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import edu.java.scrapper.service.client.stackOverflow.dto.AnswerListResponse;
+import edu.java.scrapper.service.client.stackOverflow.dto.QuestionResponse;
 import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;

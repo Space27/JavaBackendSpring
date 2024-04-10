@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.client.stackOverflowClient.dto;
+package edu.java.scrapper.service.client.stackOverflow.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URI;

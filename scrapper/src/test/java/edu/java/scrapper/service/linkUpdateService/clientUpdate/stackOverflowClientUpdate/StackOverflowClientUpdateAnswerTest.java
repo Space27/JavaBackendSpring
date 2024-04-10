@@ -1,7 +1,7 @@
 package edu.java.scrapper.service.linkUpdateService.clientUpdate.stackOverflowClientUpdate;
 
-import edu.java.scrapper.service.client.stackOverflowClient.StackOverflowClient;
-import edu.java.scrapper.service.client.stackOverflowClient.dto.AnswerListResponse;
+import edu.java.scrapper.service.client.stackOverflow.StackOverflowClient;
+import edu.java.scrapper.service.client.stackOverflow.dto.AnswerListResponse;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -79,7 +79,7 @@ class StackOverflowClientUpdateAnswerTest {
         URI uri = URI.create(link);
         OffsetDateTime time = OffsetDateTime.now();
         List<AnswerListResponse.AnswerResponse> answerResponses = List.of(
-            new AnswerListResponse.AnswerResponse(1,  time.minusNanos(1)),
+            new AnswerListResponse.AnswerResponse(1, time.minusNanos(1)),
             new AnswerListResponse.AnswerResponse(3, time),
             new AnswerListResponse.AnswerResponse(-2, time.plusNanos(1))
         );
