@@ -1,8 +1,8 @@
 package edu.java.scrapper.service.linkUpdateService;
 
 import edu.java.scrapper.domain.dto.Link;
-import edu.java.scrapper.service.client.botClient.BotClient;
-import edu.java.scrapper.service.client.botClient.ResponseErrorException;
+import edu.java.scrapper.service.client.bot.BotClient;
+import edu.java.scrapper.service.client.bot.ResponseErrorException;
 import edu.java.scrapper.util.MessageDispatcherUtils;
 import java.time.OffsetDateTime;
 import java.util.List;
