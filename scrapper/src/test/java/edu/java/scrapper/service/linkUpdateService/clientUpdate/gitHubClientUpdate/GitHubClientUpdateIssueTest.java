@@ -1,7 +1,11 @@
 package edu.java.scrapper.service.linkUpdateService.clientUpdate.gitHubClientUpdate;
 
-import edu.java.scrapper.service.client.gitHubClient.GitHubClient;
-import edu.java.scrapper.service.client.gitHubClient.dto.IssueResponse;
+import edu.java.scrapper.service.client.gitHub.GitHubClient;
+import edu.java.scrapper.service.client.gitHub.dto.IssueResponse;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,10 +13,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 

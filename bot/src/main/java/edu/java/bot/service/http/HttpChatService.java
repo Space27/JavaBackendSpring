@@ -1,8 +1,8 @@
 package edu.java.bot.service.http;
 
 import edu.java.bot.service.ChatService;
-import edu.java.bot.service.client.scrapperClient.ResponseErrorException;
-import edu.java.bot.service.client.scrapperClient.ScrapperClient;
+import edu.java.bot.service.client.scrapper.ResponseErrorException;
+import edu.java.bot.service.client.scrapper.ScrapperClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

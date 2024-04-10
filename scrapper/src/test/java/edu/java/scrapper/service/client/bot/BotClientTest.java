@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.client.botClient;
+package edu.java.scrapper.service.client.bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
