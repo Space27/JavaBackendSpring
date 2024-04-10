@@ -1,21 +1,25 @@
 package edu.java.scrapper.service.client.stackOverflow;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.configuration.ClientConfiguration;
+import edu.java.scrapper.service.client.stackOverflow.dto.AnswerListResponse;
 import edu.java.scrapper.service.client.stackOverflow.dto.QuestionResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @WireMockTest
 class StackOverflowClientTest {
@@ -68,5 +72,39 @@ class StackOverflowClientTest {
         assertThat(response)
             .isNotNull()
             .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Корректный запрос ответов на вопрос")
+    void fetchAnswers_shouldReturnCorrectAnswers() {
+        OffsetDateTime base = OffsetDateTime.now(ZoneId.of("UTC"));
+        List<AnswerListResponse.AnswerResponse> answerResponses = List.of(
+            new AnswerListResponse.AnswerResponse(1, base),
+            new AnswerListResponse.AnswerResponse(3, base.minusDays(1)),
+            new AnswerListResponse.AnswerResponse(-2, base.plusDays(1))
+        );
+        stubFor(get("/questions/10/answers?site=stackoverflow")
+            .willReturn(okJson(asJsonString(new AnswerListResponse(answerResponses)))));
+
+        List<AnswerListResponse.AnswerResponse> result = client.fetchAnswers(10L).items();
+
+        assertThat(result)
+            .isEqualTo(answerResponses);
+    }
+
+    @Test
+    @DisplayName("Некорректный запрос ответов")
+    void fetchAnswers_shouldThrowExceptionForIncorrectRequest() {
+        assertThrows(RuntimeException.class, () -> client.fetchAnswers(1L));
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

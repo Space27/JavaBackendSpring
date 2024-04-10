@@ -1,7 +1,7 @@
 package edu.java.scrapper.service.linkUpdateService.linkUpdater;
 
-import edu.java.scrapper.domain.dao.jdbc.JdbcChatLinkDao;
-import edu.java.scrapper.domain.dao.jdbc.JdbcLinkDao;
+import edu.java.scrapper.domain.dao.jooq.JooqChatLinkDao;
+import edu.java.scrapper.domain.dao.jooq.JooqLinkDao;
 import edu.java.scrapper.domain.dto.ChatLink;
 import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.service.linkUpdateService.BotService;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JdbcLinkUpdater implements LinkUpdater {
+public class JooqLinkUpdater implements LinkUpdater {
 
     private final ClientUpdater clientUpdater;
     private final BotService botService;
-    private final JdbcLinkDao linkDao;
-    private final JdbcChatLinkDao chatLinkDao;
+    private final JooqLinkDao linkDao;
+    private final JooqChatLinkDao chatLinkDao;
 
     @Override
     public int update() {

@@ -35,7 +35,7 @@ class LinksControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean
+    @MockBean(name = "jooqLinkService")
     LinkService linkService;
     @MockBean
     ClientUpdater clientUpdater;
