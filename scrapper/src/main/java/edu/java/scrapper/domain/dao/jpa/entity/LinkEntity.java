@@ -23,11 +23,11 @@ public class LinkEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @URL
     @Column(name = "url", nullable = false, updatable = false, unique = true, columnDefinition = "text")
-    String url;
+    private String url;
 
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamp with time zone")
     private OffsetDateTime createdAt;
@@ -40,7 +40,7 @@ public class LinkEntity {
     }
 
     public LinkEntity(URI url) {
-        this.url = url.toString();
+        this(url.toString());
     }
 
     @PrePersist

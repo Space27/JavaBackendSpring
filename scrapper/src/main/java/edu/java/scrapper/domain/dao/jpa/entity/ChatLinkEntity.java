@@ -24,14 +24,14 @@ public class ChatLinkEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamp with time zone")
     private OffsetDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
-    ChatEntity chat;
+    private ChatEntity chat;
 
     @ManyToOne
     @JoinColumn(name = "link_id", nullable = false, updatable = false)
