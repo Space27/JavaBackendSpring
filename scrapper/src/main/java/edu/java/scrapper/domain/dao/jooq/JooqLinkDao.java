@@ -7,14 +7,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import static edu.java.scrapper.domain.jooq.Tables.CHAT_LINK;
 import static edu.java.scrapper.domain.jooq.Tables.LINK;
 import static org.jooq.impl.DSL.excluded;
 import static org.jooq.impl.DSL.select;
 
-@Repository
 @RequiredArgsConstructor
 public class JooqLinkDao implements LinkDao {
 

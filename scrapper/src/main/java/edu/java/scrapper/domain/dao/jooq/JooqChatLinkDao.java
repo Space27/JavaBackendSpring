@@ -8,12 +8,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Repository;
 import static edu.java.scrapper.domain.jooq.Tables.CHAT;
 import static edu.java.scrapper.domain.jooq.Tables.CHAT_LINK;
 import static edu.java.scrapper.domain.jooq.Tables.LINK;
 
-@Repository
 @RequiredArgsConstructor
 public class JooqChatLinkDao implements ChatLinkDao {
 

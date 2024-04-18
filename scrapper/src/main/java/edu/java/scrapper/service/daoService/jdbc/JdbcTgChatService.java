@@ -5,9 +5,7 @@ import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
 import edu.java.scrapper.domain.dao.jdbc.JdbcTgChatDao;
 import edu.java.scrapper.service.daoService.TgChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcTgChatService implements TgChatService {
 

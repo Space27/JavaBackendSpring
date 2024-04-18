@@ -7,19 +7,16 @@ import edu.java.scrapper.controller.response.ListLinkResponse;
 import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.service.daoService.LinkService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/links")
+@RequiredArgsConstructor
 public class LinksController implements LinksApi {
 
     private final LinkService linkService;
-
-    public LinksController(@Qualifier("jooqLinkService") LinkService linkService) {
-        this.linkService = linkService;
-    }
 
     @Override
     public ListLinkResponse getLinks(Long id) {

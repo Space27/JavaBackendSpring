@@ -25,7 +25,7 @@ class ChatControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean(name = "jooqTgChatService")
+    @MockBean
     TgChatService chatService;
 
     @Test

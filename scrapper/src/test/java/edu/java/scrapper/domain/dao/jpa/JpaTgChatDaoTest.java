@@ -1,6 +1,7 @@
-package edu.java.scrapper.domain.dao.jdbc;
+package edu.java.scrapper.domain.dao.jpa;
 
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.domain.dao.jpa.entity.ChatEntity;
 import edu.java.scrapper.domain.dto.Chat;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -16,27 +17,27 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest(properties = { "app.database-access-type=jdbc" })
-class JdbcTgChatTest extends IntegrationTest {
+@SpringBootTest(properties = { "app.database-access-type=jpa" })
+public class JpaTgChatDaoTest extends IntegrationTest {
 
     @Autowired
     JdbcClient jdbcClient;
     @Autowired
-    JdbcTgChatDao tgChatDao;
+    JpaTgChatDao tgChatDao;
 
     @Test
     @Rollback
     @Transactional
     @DisplayName("Добавление chat")
-    void add_shouldAddChat() {
+    void save_shouldAddChat() {
         Long chatID = 2L;
+        ChatEntity chat = new ChatEntity();
+        chat.setId(chatID);
 
-        boolean wasAdd = tgChatDao.add(chatID);
+        tgChatDao.saveAndFlush(chat);
         Chat result = jdbcClient.sql("SELECT * FROM chat")
             .query(Chat.class).single();
 
-        assertThat(wasAdd)
-            .isTrue();
         assertThat(result.id())
             .isEqualTo(chatID);
         assertThat(result.createdAt())
@@ -47,17 +48,22 @@ class JdbcTgChatTest extends IntegrationTest {
     @Rollback
     @Transactional
     @DisplayName("Повторное добавление chat")
-    void add_shouldNotAddRepeatedChat() {
+    void save_shouldNotAddRepeatedChat() {
         Long chatID = 2L;
-        tgChatDao.add(chatID);
+        ChatEntity chat = new ChatEntity();
+        chat.setId(chatID);
+        tgChatDao.saveAndFlush(chat);
         Chat expected = jdbcClient.sql("SELECT * FROM chat")
             .query(Chat.class).single();
 
-        boolean wasAdd = tgChatDao.add(chatID);
+        chat = new ChatEntity();
+        chat.setId(chatID);
+        tgChatDao.saveAndFlush(chat);
+        boolean notExists = tgChatDao.findById(chatID).isEmpty();
         Chat result = jdbcClient.sql("SELECT * FROM chat")
             .query(Chat.class).single();
 
-        assertThat(wasAdd)
+        assertThat(notExists)
             .isFalse();
         assertThat(result)
             .isEqualTo(expected);
@@ -70,14 +76,16 @@ class JdbcTgChatTest extends IntegrationTest {
     void findById_shouldFindChat() {
         List<Long> ids = List.of(1L, 2L, 3L);
         for (Long id : ids) {
-            tgChatDao.add(id);
+            ChatEntity chat = new ChatEntity();
+            chat.setId(id);
+            tgChatDao.saveAndFlush(chat);
         }
 
         for (Long id : ids) {
-            Chat result = tgChatDao.findById(id);
+            ChatEntity result = tgChatDao.findById(id).orElse(null);
             assertThat(result)
                 .isNotNull();
-            assertThat(result.id())
+            assertThat(result.getId())
                 .isEqualTo(id);
         }
     }
@@ -89,10 +97,12 @@ class JdbcTgChatTest extends IntegrationTest {
     void findById_shouldNotFindNotExistingChat() {
         List<Long> ids = List.of(1L, 2L, 3L);
         for (Long id : ids) {
-            tgChatDao.add(id);
+            ChatEntity chat = new ChatEntity();
+            chat.setId(id);
+            tgChatDao.saveAndFlush(chat);
         }
 
-        Chat result = tgChatDao.findById(0L);
+        ChatEntity result = tgChatDao.findById(0L).orElse(null);
         assertThat(result)
             .isNull();
     }
@@ -101,11 +111,14 @@ class JdbcTgChatTest extends IntegrationTest {
     @Rollback
     @Transactional
     @DisplayName("Удаление chat")
-    void remove_shouldRemoveChat() {
+    void deleteById_shouldRemoveChat() {
         Long chatID = 2L;
-        tgChatDao.add(chatID);
+        ChatEntity chat = new ChatEntity();
+        chat.setId(chatID);
+        tgChatDao.saveAndFlush(chat);
 
-        boolean wasRemoved = tgChatDao.remove(chatID);
+        tgChatDao.deleteById(chatID);
+        boolean wasRemoved = !tgChatDao.existsById(chatID);
         Optional<Chat> result = jdbcClient.sql("SELECT * FROM chat")
             .query(Chat.class).optional();
 
@@ -119,39 +132,45 @@ class JdbcTgChatTest extends IntegrationTest {
     @Rollback
     @Transactional
     @DisplayName("Удаление несуществующего chat")
-    void remove_shouldNotRemoveNotExistingChat() {
+    void deleteById_shouldNotRemoveNotExistingChat() {
         Long chatID = 2L;
-        tgChatDao.add(chatID);
+        ChatEntity chat = new ChatEntity();
+        chat.setId(chatID);
+        tgChatDao.saveAndFlush(chat);
 
-        boolean wasRemoved = tgChatDao.remove(1L);
-
-        assertThat(wasRemoved)
-            .isFalse();
-    }
-
-    @Test
-    @Rollback
-    @Transactional
-    @DisplayName("Вывод всех chatID")
-    void findAllIds_shouldReturnAllIds() {
-        List<Long> ids = List.of(1L, 2L, 3L);
-        for (Long id : ids) {
-            tgChatDao.add(id);
-        }
-
-        List<Long> result = tgChatDao.findAllIds();
+        tgChatDao.deleteById(1L);
+        Optional<Chat> result = jdbcClient.sql("SELECT * FROM chat")
+            .query(Chat.class).optional();
 
         assertThat(result)
-            .isNotNull()
-            .isEqualTo(ids);
+            .isNotEmpty();
     }
 
     @Test
     @Rollback
     @Transactional
-    @DisplayName("Пустой вывод chatID")
-    void findAllIds_shouldReturnEmptyListIfDBHasNoChats() {
-        List<Long> result = tgChatDao.findAllIds();
+    @DisplayName("Вывод всех chat")
+    void findAll_shouldReturnAllIds() {
+        List<Long> ids = List.of(1L, 2L, 3L);
+        for (Long id : ids) {
+            ChatEntity chat = new ChatEntity();
+            chat.setId(id);
+            tgChatDao.saveAndFlush(chat);
+        }
+
+        List<ChatEntity> result = tgChatDao.findAll();
+
+        assertThat(result.stream().map(ChatEntity::getId).toList())
+            .isNotNull()
+            .hasSize(3);
+    }
+
+    @Test
+    @Rollback
+    @Transactional
+    @DisplayName("Пустой вывод chat")
+    void findAll_shouldReturnEmptyListIfDBHasNoChats() {
+        List<ChatEntity> result = tgChatDao.findAll();
 
         assertThat(result)
             .isNotNull()

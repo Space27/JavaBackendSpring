@@ -1,44 +1,46 @@
-package edu.java.scrapper.domain.dao.jdbc;
+package edu.java.scrapper.domain.dao.jpa;
 
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.domain.dao.jpa.entity.LinkEntity;
 import edu.java.scrapper.domain.dto.Link;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(properties = { "app.database-access-type=jdbc" })
-class JdbcLinkTest extends IntegrationTest {
+@SpringBootTest(properties = { "app.database-access-type=jpa" })
+public class JpaLinkDaoTest extends IntegrationTest {
 
     @Autowired
     JdbcClient jdbcClient;
     @Autowired
-    JdbcLinkDao linkDao;
+    JpaLinkDao linkDao;
 
     @Test
     @Rollback
     @Transactional
     @DisplayName("Добавление link по url")
-    void add_shouldAddLinkByUrl() {
+    void save_shouldAddLinkByUrl() {
         URI url = URI.create("https://edu.tinkoff.ru/");
+        LinkEntity link = new LinkEntity();
+        link.setUrl(url.toString());
 
-        Link result = linkDao.add(url);
-        Link realResult = jdbcClient.sql("SELECT * FROM link")
+        linkDao.saveAndFlush(link);
+        Link result = jdbcClient.sql("SELECT * FROM link")
             .query(Link.class).single();
 
-        assertThat(result)
-            .isEqualTo(realResult);
         assertThat(result.url())
             .isEqualTo(url);
         assertThat(result.lastCheckAt())
@@ -53,55 +55,38 @@ class JdbcLinkTest extends IntegrationTest {
     @Rollback
     @Transactional
     @DisplayName("Повторное добавление link по url")
-    void add_shouldNotAddExistingLink() {
+    void save_shouldNotAddExistingLink() {
         URI url = URI.create("https://edu.tinkoff.ru/");
-        Link expected = linkDao.add(url);
+        LinkEntity link = new LinkEntity();
+        link.setUrl(url.toString());
+        linkDao.saveAndFlush(link);
 
-        Link result = linkDao.add(url);
-        Link realResult = jdbcClient.sql("SELECT * FROM link")
-            .query(Link.class).single();
-
-        assertThat(result)
-            .isNotNull()
-            .isEqualTo(expected)
-            .isEqualTo(realResult);
-    }
-
-    @Test
-    @Rollback
-    @Transactional
-    @DisplayName("Добавление link по url и last_check_at")
-    void add_shouldAddLinkByUrlAndLastCheckAt() {
-        URI url = URI.create("https://edu.tinkoff.ru/");
-        OffsetDateTime time = OffsetDateTime.now().withNano(0).minusDays(1);
-
-        Link result = linkDao.add(url, time);
-        Link realResult = jdbcClient.sql("SELECT * FROM link")
-            .query(Link.class).single();
-
-        assertThat(result)
-            .isEqualTo(realResult);
-        assertThat(result.url())
-            .isEqualTo(url);
-        assertThat(result.lastCheckAt())
-            .isEqualTo(time);
+        boolean wasAdded = linkDao.existsByUrl(url.toString());
+        link = new LinkEntity();
+        link.setUrl(url.toString());
+        LinkEntity finalLink = link;
+        assertThat(wasAdded)
+            .isTrue();
+        assertThrows(DataIntegrityViolationException.class, () -> linkDao.saveAndFlush(finalLink));
     }
 
     @Test
     @Rollback
     @Transactional
     @DisplayName("Замена last_check_at")
-    void add_shouldReplaceTimeIfUrlExists() {
-        URI url = URI.create("https://edu.tinkoff.ru/");
+    void save_shouldReplaceTimeIfUrlExists() {
         OffsetDateTime time = OffsetDateTime.now().withNano(0).minusDays(1);
-        linkDao.add(url);
+        URI url = URI.create("https://edu.tinkoff.ru/");
+        LinkEntity link = new LinkEntity();
+        link.setUrl(url.toString());
+        linkDao.saveAndFlush(link);
 
-        Link result = linkDao.add(url, time);
-        Link realResult = jdbcClient.sql("SELECT * FROM link")
+        link = linkDao.findByUrl(url.toString()).orElse(null);
+        link.setLastCheckAt(time);
+        linkDao.saveAndFlush(link);
+        Link result = jdbcClient.sql("SELECT * FROM link")
             .query(Link.class).single();
 
-        assertThat(result)
-            .isEqualTo(realResult);
         assertThat(result.url())
             .isEqualTo(url);
         assertThat(result.lastCheckAt())
@@ -112,29 +97,17 @@ class JdbcLinkTest extends IntegrationTest {
     @Rollback
     @Transactional
     @DisplayName("Удаление link")
-    void remove_shouldDeleteExistingLink() {
+    void delete_shouldDeleteExistingLink() {
         URI url = URI.create("https://edu.tinkoff.ru/");
-        Link expected = linkDao.add(url);
+        LinkEntity link = new LinkEntity();
+        link.setUrl(url.toString());
+        linkDao.saveAndFlush(link);
 
-        Link result = linkDao.remove(url);
-        Link realResult = jdbcClient.sql("SELECT * FROM link")
+        linkDao.deleteByUrl(url.toString());
+        linkDao.flush();
+        Link result = jdbcClient.sql("SELECT * FROM link")
             .query(Link.class).optional().orElse(null);
 
-        assertThat(realResult)
-            .isNull();
-        assertThat(result)
-            .isEqualTo(expected);
-    }
-
-    @Test
-    @Rollback
-    @Transactional
-    @DisplayName("Удаление несуществующего link")
-    void remove_shouldNotDeleteNotExistingLink() {
-        URI url = URI.create("https://edu.tinkoff.ru/");
-
-        Link result = linkDao.remove(url);
-
         assertThat(result)
             .isNull();
     }
@@ -142,28 +115,42 @@ class JdbcLinkTest extends IntegrationTest {
     @Test
     @Rollback
     @Transactional
-    @DisplayName("Поиск link")
+    @DisplayName("Поиск нескольких link")
     void find_shouldFindLink() {
+        URI url = URI.create("https://edu.tinkoff.ru/");
+        LinkEntity link = new LinkEntity();
+        link.setUrl(url.toString());
+        linkDao.saveAndFlush(link);
+
+        assertThat(linkDao.findById(link.getId()))
+            .isEqualTo(linkDao.findByUrl(url.toString()));
+        assertThat(linkDao.findById(link.getId()).orElse(null))
+            .isEqualTo(link);
+    }
+
+    @Test
+    @Rollback
+    @Transactional
+    @DisplayName("Поиск нескольких link")
+    void find_shouldFindLinks() {
         List<URI> urls = List.of(
             URI.create("https://edu.tinkoff.ru/"),
             URI.create("https://github.com/"),
             URI.create("https://lk.etu.ru/")
         );
-        List<Link> expected = new ArrayList<>();
         for (URI url : urls) {
-            expected.add(linkDao.add(url));
+            LinkEntity link = new LinkEntity();
+            link.setUrl(url.toString());
+            linkDao.saveAndFlush(link);
         }
 
-        for (int i = 0; i < urls.size(); ++i) {
-            Link resultUrl = linkDao.find(urls.get(i));
-            Link resultId = linkDao.find(expected.get(i).id());
+        for (URI url : urls) {
+            LinkEntity find = linkDao.findByUrl(url.toString()).orElse(null);
 
-            assertThat(resultUrl)
+            assertThat(find)
                 .isNotNull();
-            assertThat(resultUrl)
-                .isEqualTo(resultId);
-            assertThat(expected)
-                .contains(resultUrl);
+            assertThat(find.getUrl())
+                .isEqualTo(url.toString());
         }
     }
 
@@ -178,10 +165,12 @@ class JdbcLinkTest extends IntegrationTest {
             URI.create("https://lk.etu.ru/")
         );
         for (URI url : urls) {
-            linkDao.add(url);
+            LinkEntity link = new LinkEntity();
+            link.setUrl(url.toString());
+            linkDao.saveAndFlush(link);
         }
 
-        Link result = linkDao.find(URI.create("https://digital.etu.ru/"));
+        LinkEntity result = linkDao.findByUrl("https://digital.etu.ru/").orElse(null);
 
         assertThat(result)
             .isNull();
@@ -192,20 +181,22 @@ class JdbcLinkTest extends IntegrationTest {
     @Transactional
     @DisplayName("Список link")
     void findAll_shouldReturnAllLinks() {
-        List<URI> expected = List.of(
-            URI.create("https://edu.tinkoff.ru/"),
-            URI.create("https://github.com/"),
-            URI.create("https://lk.etu.ru/")
+        List<String> expected = List.of(
+            "https://edu.tinkoff.ru/",
+            "https://github.com/",
+            "https://lk.etu.ru/"
         );
-        for (URI url : expected) {
-            linkDao.add(url);
+        for (String url : expected) {
+            LinkEntity link = new LinkEntity();
+            link.setUrl(url);
+            linkDao.saveAndFlush(link);
         }
 
-        List<Link> result = linkDao.findAll();
+        List<LinkEntity> result = linkDao.findAll();
 
         assertThat(result)
             .isNotNull();
-        assertThat(result.stream().map(Link::url))
+        assertThat(result.stream().map(LinkEntity::getUrl))
             .isEqualTo(expected);
     }
 
@@ -214,7 +205,7 @@ class JdbcLinkTest extends IntegrationTest {
     @Transactional
     @DisplayName("Пустой список link")
     void findAll_shouldReturnEmptyListIfLinksNotExist() {
-        List<Link> result = linkDao.findAll();
+        List<LinkEntity> result = linkDao.findAll();
 
         assertThat(result)
             .isNotNull()
@@ -232,16 +223,21 @@ class JdbcLinkTest extends IntegrationTest {
             URI.create("https://github.com/"), base,
             URI.create("https://lk.etu.ru/"), base.plusSeconds(1)
         );
-        for (Map.Entry<URI, OffsetDateTime> link : links.entrySet()) {
-            linkDao.add(link.getKey(), link.getValue());
+        for (Map.Entry<URI, OffsetDateTime> entry : links.entrySet()) {
+            LinkEntity link = new LinkEntity();
+            link.setUrl(entry.getKey().toString());
+            linkDao.saveAndFlush(link);
+            link = linkDao.findByUrl(entry.getKey().toString()).orElse(null);
+            link.setLastCheckAt(entry.getValue());
+            linkDao.saveAndFlush(link);
         }
 
-        List<Link> result = linkDao.findAll(base);
+        List<LinkEntity> result = linkDao.findLinkEntitiesByLastCheckAtLessThanEqual(base);
 
         assertThat(result)
             .isNotNull()
             .hasSize(2);
-        assertThat(result.stream().map(Link::url).toList())
-            .contains(URI.create("https://github.com/"), URI.create("https://edu.tinkoff.ru/"));
+        assertThat(result.stream().map(LinkEntity::getUrl).toList())
+            .contains("https://github.com/", "https://edu.tinkoff.ru/");
     }
 }

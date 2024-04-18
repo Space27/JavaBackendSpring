@@ -5,12 +5,10 @@ import edu.java.scrapper.domain.dto.Chat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import static edu.java.scrapper.domain.jooq.Tables.CHAT;
 import static edu.java.scrapper.domain.jooq.Tables.CHAT_LINK;
 
-@Repository
 @RequiredArgsConstructor
 public class JooqTgChatDao implements TgChatDao {
 

@@ -12,10 +12,8 @@ import edu.java.scrapper.service.daoService.LinkService;
 import java.net.URI;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
 

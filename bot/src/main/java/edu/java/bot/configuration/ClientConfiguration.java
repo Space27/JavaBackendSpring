@@ -23,7 +23,7 @@ public class ClientConfiguration {
             .defaultStatusHandler(
                 HttpStatusCode::isError,
                 resp -> {
-                    ApiErrorResponse empty = new ApiErrorResponse(null, null, null, null, null);
+                    ApiErrorResponse empty = new ApiErrorResponse();
                     return resp.bodyToMono(ApiErrorResponse.class).switchIfEmpty(Mono.just(empty))
                         .flatMap(errorBody -> {
                             if (errorBody.code() == null) {

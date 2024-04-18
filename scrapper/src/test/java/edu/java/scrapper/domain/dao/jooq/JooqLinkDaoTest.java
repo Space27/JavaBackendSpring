@@ -19,7 +19,7 @@ import static edu.java.scrapper.domain.jooq.Tables.LINK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest
+@SpringBootTest(properties = { "app.database-access-type=jooq" })
 public class JooqLinkDaoTest extends IntegrationTest {
 
     @Autowired

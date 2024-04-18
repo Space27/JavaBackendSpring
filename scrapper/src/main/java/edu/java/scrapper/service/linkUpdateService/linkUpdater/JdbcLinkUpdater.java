@@ -12,10 +12,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkUpdater implements LinkUpdater {
 
@@ -25,13 +24,14 @@ public class JdbcLinkUpdater implements LinkUpdater {
     private final JdbcChatLinkDao chatLinkDao;
 
     @Override
+    @Transactional
     public int update() {
         OffsetDateTime checkTime = OffsetDateTime.now().withNano(0);
         int updatedLinksAmount = 0;
         List<Link> linksToCheck = linkDao.findAll(checkTime.minus(MIN_INTERVAL));
 
         for (Link link : linksToCheck) {
-            Map<String, OffsetDateTime> descriptions = clientUpdater.handle(link.url(), checkTime);
+            Map<String, OffsetDateTime> descriptions = clientUpdater.handle(link.url(), link.lastCheckAt());
 
             if (!descriptions.isEmpty()) {
                 ++updatedLinksAmount;
