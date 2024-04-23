@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest(properties = {"app.database-access-type=jooq"})
+@SpringBootTest(properties = { "app.database-access-type=jooq", "app.use-queue=false" })
 public class JooqChatLinkDaoTest extends IntegrationTest {
 
     @Autowired

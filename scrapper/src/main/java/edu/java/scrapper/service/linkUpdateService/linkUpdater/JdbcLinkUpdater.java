@@ -29,7 +29,6 @@ public class JdbcLinkUpdater implements LinkUpdater {
         OffsetDateTime checkTime = OffsetDateTime.now().withNano(0);
         int updatedLinksAmount = 0;
         List<Link> linksToCheck = linkDao.findAll(checkTime.minus(MIN_INTERVAL));
-
         for (Link link : linksToCheck) {
             Map<String, OffsetDateTime> descriptions = clientUpdater.handle(link.url(), link.lastCheckAt());
 

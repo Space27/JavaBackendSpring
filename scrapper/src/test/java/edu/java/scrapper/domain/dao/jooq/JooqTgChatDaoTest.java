@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest(properties = { "app.database-access-type=jooq" })
+@SpringBootTest(properties = { "app.database-access-type=jooq", "app.use-queue=false" })
 class JooqTgChatDaoTest extends IntegrationTest {
 
     @Autowired

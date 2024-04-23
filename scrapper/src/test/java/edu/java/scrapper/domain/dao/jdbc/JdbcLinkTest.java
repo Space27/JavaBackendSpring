@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest(properties = { "app.database-access-type=jdbc" })
+@SpringBootTest(properties = { "app.database-access-type=jdbc", "app.use-queue=false" })
 class JdbcLinkTest extends IntegrationTest {
 
     @Autowired
