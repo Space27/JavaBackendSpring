@@ -1,7 +1,7 @@
 package edu.java.scrapper.service.linkUpdateService.linkUpdateSender;
 
 import edu.java.scrapper.configuration.ApplicationConfig;
-import edu.java.scrapper.service.client.botClient.request.LinkUpdateRequest;
+import edu.java.scrapper.service.client.bot.request.LinkUpdateRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
