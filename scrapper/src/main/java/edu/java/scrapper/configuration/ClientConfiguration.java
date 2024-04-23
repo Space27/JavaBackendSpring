@@ -33,7 +33,7 @@ public class ClientConfiguration {
     @Bean
     public BotClient botClient(
         @Value("${api.bot.baseurl}") String baseURL,
-        @Value("app.retry-config") ApplicationConfig.RetryConfig retryConfig
+        @Value("${app.retry-config}") ApplicationConfig.RetryConfig retryConfig
     ) {
         WebClient webClient = WebClient.builder()
             .filter(withRetryableRequests(retryConfig))
@@ -62,7 +62,7 @@ public class ClientConfiguration {
     @Bean
     public GitHubClient gitHubClient(
         @Value("${api.github.baseurl}") String baseURL,
-        @Value("app.retry-config") ApplicationConfig.RetryConfig retryConfig
+        @Value("${app.retry-config}") ApplicationConfig.RetryConfig retryConfig
     ) {
         WebClient webClient = WebClient.builder().filter(withRetryableRequests(retryConfig)).baseUrl(baseURL).build();
         WebClientAdapter adapter = WebClientAdapter.create(webClient);
@@ -74,7 +74,7 @@ public class ClientConfiguration {
     @Bean
     public StackOverflowClient stackOverflowClient(
         @Value("${api.stackoverflow.baseurl}") String baseURL,
-        @Value("app.retry-config") ApplicationConfig.RetryConfig retryConfig
+        @Value("${app.retry-config}") ApplicationConfig.RetryConfig retryConfig
     ) {
         WebClient webClient = WebClient.builder().filter(withRetryableRequests(retryConfig)).baseUrl(baseURL).build();
         WebClientAdapter adapter = WebClientAdapter.create(webClient);
