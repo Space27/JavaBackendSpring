@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
@@ -25,12 +26,15 @@ import reactor.util.retry.RetryBackoffSpec;
 @RequiredArgsConstructor
 public class ClientConfiguration {
 
-    private final ApplicationConfig applicationConfig;
+    private static final String RETRY_LOG_MESSAGE = "Retrying request after following exception : {}";
 
     @Bean
-    public ScrapperClient scrapperClient(@Value("${api.scrapper.baseurl}") String baseURL) {
+    public ScrapperClient scrapperClient(
+        @Value("${api.scrapper.baseurl}") String baseURL,
+        @Value("${api.retry-config") ApplicationConfig.RetryConfig retryConfig
+    ) {
         WebClient webClient = WebClient.builder()
-            .filter(withRetryableRequests())
+            .filter(withRetryableRequests(retryConfig))
             .defaultStatusHandler(
                 HttpStatusCode::isError,
                 resp -> {
@@ -53,8 +57,8 @@ public class ClientConfiguration {
         return factory.createClient(ScrapperClient.class);
     }
 
-    private ExchangeFilterFunction withRetryableRequests() {
-        List<Integer> responseCodes = applicationConfig.retryConfig().responseCodes();
+    private ExchangeFilterFunction withRetryableRequests(ApplicationConfig.RetryConfig retryConfig) {
+        List<Integer> responseCodes = retryConfig.responseCodes();
 
         return (request, next) -> next.exchange(request)
             .flatMap(clientResponse -> Mono.just(clientResponse)
@@ -62,26 +66,42 @@ public class ClientConfiguration {
                 .flatMap(response -> clientResponse.createException())
                 .flatMap(Mono::error)
                 .thenReturn(clientResponse))
-            .retryWhen(retryBackoffSpec());
+            .retryWhen(retryBackoffSpec(retryConfig));
     }
 
-    private RetryBackoffSpec retryBackoffSpec() {
-        return getRetryPolicy()
-            .filter(throwable -> throwable instanceof WebClientResponseException)
-            .doBeforeRetry(retrySignal -> log.warn(
-                "Retrying request after following exception : {}",
-                retrySignal.failure().getLocalizedMessage()
-            ))
-            .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> retrySignal.failure());
+    private Retry retryBackoffSpec(ApplicationConfig.RetryConfig retryConfig) {
+        Retry retry = getRetryPolicy(retryConfig);
+
+        if (retry instanceof RetryBackoffSpec retryBackoff) {
+            return retryBackoff
+                .filter(throwable -> throwable instanceof WebClientResponseException)
+                .doBeforeRetry(retrySignal -> log.warn(RETRY_LOG_MESSAGE, retrySignal.failure().getLocalizedMessage()))
+                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> retrySignal.failure());
+        }
+
+        return retry;
     }
 
-    private RetryBackoffSpec getRetryPolicy() {
-        Integer maxAttempts = applicationConfig.retryConfig().maxAttempts();
-        Duration delayTime = applicationConfig.retryConfig().delayTime();
+    private Retry getRetryPolicy(ApplicationConfig.RetryConfig retryConfig) {
+        Integer maxAttempts = retryConfig.maxAttempts();
+        Duration delayTime = retryConfig.delayTime();
 
-        return switch (applicationConfig.retryConfig().delayType()) {
+        return switch (retryConfig.delayType()) {
             case FIXED -> Retry.fixedDelay(maxAttempts, delayTime);
             case EXPONENTIAL -> Retry.backoff(maxAttempts, delayTime);
+            case LINEAR ->
+                RetryBackoffSpec.from(flux -> flux.flatMap(rs -> getLinearRetry(rs, maxAttempts, delayTime)));
         };
+    }
+
+    private Mono<Long> getLinearRetry(Retry.RetrySignal rs, Integer maxAttempt, Duration delayTime) {
+        if (rs.totalRetries() < maxAttempt) {
+            Duration delay = delayTime.multipliedBy(rs.totalRetries());
+            log.warn(RETRY_LOG_MESSAGE, rs.failure().getLocalizedMessage());
+            return Mono.delay(delay)
+                .thenReturn(rs.totalRetries());
+        } else {
+            throw Exceptions.propagate(rs.failure());
+        }
     }
 }

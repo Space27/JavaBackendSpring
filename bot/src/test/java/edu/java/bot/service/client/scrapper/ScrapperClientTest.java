@@ -49,9 +49,9 @@ class ScrapperClientTest {
                 List.of(502)
             )
         );
-        ClientConfiguration clientConfiguration = new ClientConfiguration(applicationConfig);
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.scrapperClient(wm.getHttpBaseUrl());
+        client = clientConfiguration.scrapperClient(wm.getHttpBaseUrl(), applicationConfig.retryConfig());
     }
 
     @Test

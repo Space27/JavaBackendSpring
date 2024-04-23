@@ -25,7 +25,8 @@ public record ApplicationConfig(
                               @NotNull Duration delayTime, @NotNull @NotEmpty List<Integer> responseCodes) {
         public enum DelayType {
             FIXED,
-            EXPONENTIAL
+            EXPONENTIAL,
+            LINEAR
         }
     }
 }

@@ -46,9 +46,9 @@ class StackOverflowClientTest {
                 List.of(502)
             )
         );
-        ClientConfiguration clientConfiguration = new ClientConfiguration(applicationConfig);
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.stackOverflowClient(wm.getHttpBaseUrl());
+        client = clientConfiguration.stackOverflowClient(wm.getHttpBaseUrl(), applicationConfig.retryConfig());
     }
 
     @Test

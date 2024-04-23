@@ -45,9 +45,9 @@ class GitHubClientTest {
                 List.of(502)
             )
         );
-        ClientConfiguration clientConfiguration = new ClientConfiguration(applicationConfig);
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.gitHubClient(wm.getHttpBaseUrl());
+        client = clientConfiguration.gitHubClient(wm.getHttpBaseUrl(), applicationConfig.retryConfig());
     }
 
     @Test

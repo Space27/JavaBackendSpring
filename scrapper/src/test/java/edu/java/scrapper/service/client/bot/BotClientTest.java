@@ -42,9 +42,9 @@ class BotClientTest {
                 List.of(502)
             )
         );
-        ClientConfiguration clientConfiguration = new ClientConfiguration(applicationConfig);
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.botClient(wm.getHttpBaseUrl());
+        client = clientConfiguration.botClient(wm.getHttpBaseUrl(), applicationConfig.retryConfig());
     }
 
     @Test
