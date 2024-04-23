@@ -31,7 +31,7 @@ public class ClientConfiguration {
     @Bean
     public ScrapperClient scrapperClient(
         @Value("${api.scrapper.baseurl}") String baseURL,
-        @Value("${api.retry-config") ApplicationConfig.RetryConfig retryConfig
+        ApplicationConfig.RetryConfig retryConfig
     ) {
         WebClient webClient = WebClient.builder()
             .filter(withRetryableRequests(retryConfig))

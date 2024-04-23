@@ -23,6 +23,7 @@ public record ApplicationConfig(
     Integer maxBucketSize,
 
     @NotNull
+    @Bean
     RetryConfig retryConfig
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
