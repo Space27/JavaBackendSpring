@@ -46,6 +46,7 @@ class GitHubClientTest {
             ),
             null,
             null
+            )
         );
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 

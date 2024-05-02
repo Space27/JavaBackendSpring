@@ -43,6 +43,7 @@ class BotClientTest {
             ),
             null,
             null
+            )
         );
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 

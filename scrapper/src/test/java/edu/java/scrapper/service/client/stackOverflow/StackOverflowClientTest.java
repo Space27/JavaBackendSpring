@@ -47,6 +47,7 @@ class StackOverflowClientTest {
             ),
             null,
             null
+            )
         );
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
