@@ -9,6 +9,7 @@ import edu.java.scrapper.controller.request.RemoveLinkRequest;
 import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.controller.response.LinkResponse;
 import edu.java.scrapper.controller.response.ListLinkResponse;
+import edu.java.scrapper.service.RateLimitService;
 import edu.java.scrapper.service.daoService.LinkService;
 import edu.java.scrapper.service.linkUpdateService.clientUpdate.ClientUpdater;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = LinksController.class)
+@Import(RateLimitService.class)
 class LinksControllerTest {
 
     @Autowired
@@ -232,6 +235,44 @@ class LinksControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.stacktrace").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionMessage").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionName").exists());
+    }
+
+    @Test
+    @DisplayName("Превышение допустимого числа запросов")
+    void endpoint_shouldReturnTooManyRequestsForSeveralRequests() throws Exception {
+        for (int i = 0; i < 20; ++i) {
+            Mockito.when(linkService.listAll(any())).thenReturn(List.of());
+
+            mockMvc.perform(get("/links")
+                .remoteAddress("139.56.211.186")
+                .header("Tg-Chat-Id", 1)
+                .accept(MediaType.APPLICATION_JSON));
+        }
+
+        mockMvc.perform(get("/links")
+            .remoteAddress("139.56.211.186")
+            .header("Tg-Chat-Id", 1)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isTooManyRequests());
+    }
+
+    @Test
+    @DisplayName("Превышение допустимого числа запросов с другого IP")
+    void endpoint_shouldReturnOkForOtherIPWithFullTokens() throws Exception {
+        for (int i = 0; i < 20; ++i) {
+            Mockito.when(linkService.listAll(any())).thenReturn(List.of());
+
+            mockMvc.perform(get("/links")
+                .remoteAddress("139.56.211.186")
+                .header("Tg-Chat-Id", 1)
+                .accept(MediaType.APPLICATION_JSON));
+        }
+
+        mockMvc.perform(get("/links")
+                .remoteAddress("139.56.211.187")
+                .header("Tg-Chat-Id", 1)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 
     public static String asJsonString(final Object obj) {

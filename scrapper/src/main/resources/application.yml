@@ -4,6 +4,18 @@ app:
     interval: 10s
     force-check-delay: 10s
   database-access-type: jdbc
+  max-bucket-size: 10
+  retry-config:
+    max-attempts: 3
+    delay-type: fixed
+    delay-time: 10s
+    response-codes:
+      - 502
+      - 503
+      - 504
+      - 506
+      - 507
+      - 429
 
 api:
   bot:

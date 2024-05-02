@@ -3,16 +3,19 @@ package edu.java.bot.service.client.scrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.ClientConfiguration;
 import edu.java.bot.controller.response.ApiErrorResponse;
 import edu.java.bot.service.client.scrapper.response.LinkResponse;
 import edu.java.bot.service.client.scrapper.response.ListLinkResponse;
+import java.net.URI;
+import java.time.Duration;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.net.URI;
-import java.util.List;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -20,7 +23,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.status;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,13 +33,25 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @WireMockTest
 class ScrapperClientTest {
 
+    private static final Integer maxAttempts = 2;
+
     ScrapperClient client;
 
     @BeforeEach
     void init(WireMockRuntimeInfo wm) {
+        ApplicationConfig applicationConfig = new ApplicationConfig(
+            null,
+            null,
+            new ApplicationConfig.RetryConfig(
+                maxAttempts,
+                ApplicationConfig.RetryConfig.DelayType.FIXED,
+                Duration.ofSeconds(1),
+                List.of(502)
+            )
+        );
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
-        client = clientConfiguration.scrapperClient(wm.getHttpBaseUrl());
+        client = clientConfiguration.scrapperClient(wm.getHttpBaseUrl(), applicationConfig.retryConfig());
     }
 
     @Test
@@ -68,11 +85,11 @@ class ScrapperClientTest {
         stubFor(post("/tg-chat/1")
             .willReturn(badRequest().withHeader("Content-Type", "application/json").withBody("")));
 
-        ApiErrorResponse result = assertThrows(ResponseErrorException.class, () -> client.addChat(1L))
-            .getApiErrorResponse();
+        Integer statusCode = assertThrows(WebClientResponseException.class, () -> client.addChat(1L))
+            .getStatusCode().value();
 
-        assertThat(result)
-            .isNull();
+        assertThat(statusCode)
+            .isEqualTo(400);
     }
 
     @Test
@@ -138,6 +155,38 @@ class ScrapperClientTest {
 
         assertThat(answer)
             .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Ответ сервера предполагает retry, retry успешен")
+    void call_shouldRetryRequestForSpecificResponseCodeAndCompleteSuccessfulIfItNeededMaxRetries() {
+        for (int i = 0; i < maxAttempts; ++i) {
+            stubFor(post("/tg-chat/1").willReturn(status(502)).inScenario("Test")
+                .whenScenarioStateIs(i == 0 ? STARTED : String.valueOf(i - 1))
+                .willSetStateTo(String.valueOf(i)));
+        }
+        stubFor(post("/tg-chat/1").willReturn(ok()).inScenario("Test")
+            .whenScenarioStateIs(String.valueOf(maxAttempts - 1)));
+
+        assertDoesNotThrow(() -> client.addChat(1L));
+    }
+
+    @Test
+    @DisplayName("Ответ сервера предполагает retry, retry неуспешен")
+    void call_shouldRetryRequestForSpecificResponseCodeAndCompleteUnsuccessfulIfItNeededToMoreThanMaxRetries() {
+        for (int i = 0; i <= maxAttempts; ++i) {
+            stubFor(post("/tg-chat/1").willReturn(status(502)).inScenario("Test")
+                .whenScenarioStateIs(i == 0 ? STARTED : String.valueOf(i - 1))
+                .willSetStateTo(String.valueOf(i)));
+        }
+        stubFor(post("/tg-chat/1").willReturn(ok()).inScenario("Test")
+            .whenScenarioStateIs(String.valueOf(maxAttempts)));
+
+        Integer statusCode = assertThrows(WebClientResponseException.class, () -> client.addChat(1L))
+            .getStatusCode().value();
+
+        assertThat(statusCode)
+            .isEqualTo(502);
     }
 
     public static String asJsonString(final Object obj) {

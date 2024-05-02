@@ -47,6 +47,12 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
+        <!-- Bucket -->
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+        </dependency>
+
         <!-- Dev Tools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

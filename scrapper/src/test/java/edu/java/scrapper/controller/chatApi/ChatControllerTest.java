@@ -2,6 +2,7 @@ package edu.java.scrapper.controller.chatApi;
 
 import edu.java.scrapper.controller.chatApi.exception.ChatAlreadyExistsException;
 import edu.java.scrapper.controller.chatApi.exception.ChatNotFoundException;
+import edu.java.scrapper.service.RateLimitService;
 import edu.java.scrapper.service.daoService.TgChatService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ChatController.class)
+@Import(RateLimitService.class)
 class ChatControllerTest {
 
     @Autowired
@@ -108,5 +111,35 @@ class ChatControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.stacktrace").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionMessage").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.exceptionName").exists());
+    }
+
+    @Test
+    @DisplayName("Превышение допустимого числа запросов")
+    void endpoint_shouldReturnTooManyRequestsForSeveralRequests() throws Exception {
+        for (int i = 0; i < 20; ++i) {
+            mockMvc.perform(post("/tg-chat/1")
+                    .remoteAddress("139.56.211.186")
+                    .accept(MediaType.APPLICATION_JSON));
+        }
+
+        mockMvc.perform(post("/tg-chat/1")
+                .remoteAddress("139.56.211.186")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isTooManyRequests());
+    }
+
+    @Test
+    @DisplayName("Превышение допустимого числа запросов с другого IP")
+    void endpoint_shouldReturnOkForOtherIPWithFullTokens() throws Exception {
+        for (int i = 0; i < 20; ++i) {
+            mockMvc.perform(post("/tg-chat/1")
+                .remoteAddress("139.56.211.186")
+                .accept(MediaType.APPLICATION_JSON));
+        }
+
+        mockMvc.perform(post("/tg-chat/1")
+                .remoteAddress("139.56.211.187")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 }
