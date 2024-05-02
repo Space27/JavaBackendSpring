@@ -50,7 +50,6 @@ class ScrapperClientTest {
             ),
             null,
             null
-            )
         );
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
