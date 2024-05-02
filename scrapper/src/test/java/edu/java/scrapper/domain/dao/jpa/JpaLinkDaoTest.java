@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(properties = { "app.database-access-type=jpa" })
+@SpringBootTest(properties = { "app.database-access-type=jpa", "app.use-queue=false" })
 public class JpaLinkDaoTest extends IntegrationTest {
 
     @Autowired

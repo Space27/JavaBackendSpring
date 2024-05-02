@@ -1,5 +1,6 @@
 package edu.java.scrapper.configuration;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,7 +25,13 @@ public record ApplicationConfig(
 
     @NotNull
     @Bean
-    RetryConfig retryConfig
+    RetryConfig retryConfig,
+
+    @NotNull
+    Topic botTopic,
+
+    @NotNull
+    Boolean useQueue
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
@@ -42,5 +49,9 @@ public record ApplicationConfig(
             EXPONENTIAL,
             LINEAR
         }
+    }
+
+    public record Topic(@NotNull @NotBlank String name, @NotNull @Positive Integer partitions,
+                        @NotNull @Positive Integer replicas) {
     }
 }

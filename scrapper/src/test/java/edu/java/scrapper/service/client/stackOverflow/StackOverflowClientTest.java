@@ -44,7 +44,9 @@ class StackOverflowClientTest {
                 ApplicationConfig.RetryConfig.DelayType.FIXED,
                 Duration.ofSeconds(1),
                 List.of(502)
-            )
+            ),
+            null,
+            null
         );
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
@@ -97,7 +99,7 @@ class StackOverflowClientTest {
     void fetchAnswers_shouldReturnCorrectAnswers() {
         OffsetDateTime base = OffsetDateTime.now(ZoneId.of("UTC"));
         List<AnswerListResponse.AnswerResponse> answerResponses = List.of(
-            new AnswerListResponse.AnswerResponse(1,  base),
+            new AnswerListResponse.AnswerResponse(1, base),
             new AnswerListResponse.AnswerResponse(3, base.minusDays(1)),
             new AnswerListResponse.AnswerResponse(-2, base.plusDays(1))
         );

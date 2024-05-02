@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-@SpringBootTest(properties = { "app.database-access-type=jpa" })
+@SpringBootTest(properties = { "app.database-access-type=jpa", "app.use-queue=false" })
 public class JpaChatLinkDaoTest extends IntegrationTest {
 
     @Autowired
