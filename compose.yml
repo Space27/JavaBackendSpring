@@ -20,7 +20,7 @@ services:
     networks:
       - backend
     environment:
-      DATABASE_ACCESS_TYPE: jooq
+      DATABASE_ACCESS_TYPE: jdbc
     depends_on:
       - postgresql
       - liquibase-migrations

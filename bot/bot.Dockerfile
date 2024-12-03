@@ -26,8 +26,6 @@ USER nonroot
 
 WORKDIR /opt/workspace
 
-COPY ../prometheus.yml ./data
-
 COPY --from=build $BUILD_PATH/jdk $JAVA_HOME
 COPY --from=build $BUILD_PATH/spring-boot-loader/ ./
 COPY --from=build $BUILD_PATH/dependencies/ ./
@@ -38,6 +36,5 @@ ENV USE_QUEUE=false
 ENV DELAY_TYPE=fixed
 
 EXPOSE 8090 8091
-VOLUME ["/opt/workspace/data"]
 
 ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "org.springframework.boot.loader.launch.JarLauncher"]
