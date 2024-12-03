@@ -3,11 +3,11 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
-  database-access-type: jdbc
+  database-access-type: ${DATABASE_ACCESS_TYPE:jpa}
   max-bucket-size: 10
   retry-config:
     max-attempts: 3
-    delay-type: fixed
+    delay-type: ${DELAY_TYPE:fixed}
     delay-time: 10s
     response-codes:
       - 502
@@ -20,7 +20,7 @@ app:
     name: link-update
     partitions: 2
     replicas: 1
-  use-queue: false
+  use-queue: ${USE_QUEUE:false}
 
 api:
   bot:
@@ -34,9 +34,9 @@ spring:
   application:
     name: scrapper
   datasource:
-    url: jdbc:postgresql://localhost:5432/scrapper
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/${SPRING_DATASOURCE_DB:scrapper}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     hibernate:
       ddl-auto: none
@@ -94,3 +94,17 @@ management:
       enabled: true
     prometheus:
       enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://host.docker.internal:5432/scrapper
+  kafka:
+    bootstrap-servers: host.docker.internal:29092
+
+api:
+  bot:
+    baseurl: http://host.docker.internal:8090

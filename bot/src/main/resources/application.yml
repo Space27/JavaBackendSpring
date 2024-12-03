@@ -3,7 +3,7 @@ app:
   max-bucket-size: 10
   retry-config:
     max-attempts: 3
-    delay-type: fixed
+    delay-type: ${DELAY_TYPE:fixed}
     delay-time: 10s
     response-codes:
       - 502
@@ -14,7 +14,7 @@ app:
       - 429
   scrapper-topic:
     name: link-update
-  use-queue: false
+  use-queue: ${USE_QUEUE:false}
 
 api:
   scrapper:
@@ -99,3 +99,15 @@ management:
       enabled: true
     prometheus:
       enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  kafka:
+    bootstrap-servers: host.docker.internal:29092
+
+api:
+  scrapper:
+    baseurl: http://host.docker.internal:8080
