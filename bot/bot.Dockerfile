@@ -3,7 +3,7 @@ ENV RELEASE=21
 
 WORKDIR /opt/build
 
-ARG JAR_FILE=target/*.jar
+ARG JAR_FILE=bot/target/*.jar
 COPY ${JAR_FILE} app.jar
 
 RUN java -Djarmode=layertools -jar app.jar extract
