@@ -3,7 +3,7 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
-  database-access-type: ${DATABASE_ACCESS_TYPE:jpa}
+  database-access-type: ${DATABASE_ACCESS_TYPE:jdbc}
   max-bucket-size: 10
   retry-config:
     max-attempts: 3

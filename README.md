@@ -46,14 +46,17 @@
 2. Конфигурационные файлы, в которых можно изменить модель Retry (fixed, linear, exponential), взаимодействие с БД (jdbc, jooq, jpa), а также использование очереди (true/false):
    * [Bot](bot/src/main/resources/application.yml) - необходимо установить **telegram-token**
    * [Scrapper](scrapper/src/main/resources/application.yml)
-3. Собрать проект командой `mvn package` или `mvn package -DskipTests` для пропуска тестов (ввести команду можно через терминал, открывающийся двойным нажатием *Ctrl* в IntelliJ IDEA)
-4. Поднять `PostgreSQL` и накатить [миграции](migrations) (можно выполнить при помощи команды `docker compose up liquibase-migrations`)
-5. Опционально поднять `Kafka` при помощи `docker compose up kafka1`
-6. Запустить приложение [Scrapper](scrapper/src/main/java/edu/java/scrapper/ScrapperApplication.java), затем приложение [Bot](bot/src/main/java/edu/java/bot/BotApplication.java)
+3. Собрать проект командой `mvn package -DskipTests` (ввести команду можно через терминал, открывающийся двойным нажатием *Ctrl* в IntelliJ IDEA)
+4. Поднять `PostgreSQL` и накатить [миграции](migrations) (можно выполнить при помощи команды `docker compose up -d liquibase-migrations`)
+5. Опционально поднять `Kafka` при помощи `docker compose up -d kafka1`
+6. Опционально поднять `Grafana` при помощи `docker compose up -d grafana`
+7. Запустить приложение [Scrapper](scrapper/src/main/java/edu/java/scrapper/ScrapperApplication.java), затем [Bot](bot/src/main/java/edu/java/bot/BotApplication.java)
 
 ### Запуск через Docker
-Сервисы собраны в легковесные Docker-образы, поэтому их можно подтянуть с GitHub Packages и запустить без сборки
-1. Скопировать или скачать [compose файл](compose.yml)
-2. Скачать конфигурационные файлы [миграции](migrations) и [prometheus](prometheus.yml) или запустить `docker compose files`
-3. Указать в [compose](compose.yml) **TELEGRAM_API_KEY** для bot
-4. Выполнить `docker compose up bot`
+Сервисы собраны в легковесные [Docker-образы](https://github.com/Space27?tab=packages&repo_name=JavaBackendSpring), поэтому их можно подтянуть с GitHub Packages и запустить без сборки.  
+Для ручной сборки образов необходимо предварительно собрать проект командой `mvn package -DskipTests`.
+1. Скопировать или скачать [compose.yml](compose.yml)
+2. Скачать конфигурационные файлы [миграции](migrations) и [prometheus](prometheus.yml) или запустить `docker compose run -d --rm files`
+3. Указать в [compose.yml](compose.yml) **TELEGRAM_API_KEY** для bot
+4. Выполнить `docker compose up -d bot`
+5. Выключить приложение `docker compose down`

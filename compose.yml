@@ -20,7 +20,7 @@ services:
     networks:
       - backend
     environment:
-      DATABASE_ACCESS_TYPE: jdbc
+      DATABASE_ACCESS_TYPE: jooq
     depends_on:
       - postgresql
       - liquibase-migrations
@@ -49,6 +49,7 @@ services:
     image: liquibase/liquibase:4.25
     depends_on:
       - postgresql
+    restart: on-failure
     command:
       - --changelog-file=master.xml
       - --driver=org.postgresql.Driver
