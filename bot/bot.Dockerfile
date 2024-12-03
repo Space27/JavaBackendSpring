@@ -3,6 +3,9 @@ ENV RELEASE=21
 
 WORKDIR /opt/build
 
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+
 RUN java -Djarmode=layertools -jar app.jar extract
 RUN $JAVA_HOME/bin/jlink \
          --add-modules jdk.crypto.ec,`jdeps --ignore-missing-deps -q -recursive --multi-release ${RELEASE} --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' app.jar` \
