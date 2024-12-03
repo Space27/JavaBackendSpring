@@ -8,7 +8,7 @@ COPY ${JAR_FILE} app.jar
 
 RUN java -Djarmode=layertools -jar app.jar extract
 RUN $JAVA_HOME/bin/jlink \
-         --add-modules `jdeps --ignore-missing-deps -q -recursive --multi-release ${RELEASE} --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' app.jar` \
+         --add-modules jdk.crypto.ec,`jdeps --ignore-missing-deps -q -recursive --multi-release ${RELEASE} --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' app.jar` \
          --strip-debug \
          --no-man-pages \
          --no-header-files \
@@ -26,8 +26,8 @@ USER nonroot
 
 WORKDIR /opt/workspace
 
-COPY ../migrations ./data/migrations
-COPY ../prometheus.yml ./data
+COPY migrations ./data/migrations
+COPY prometheus.yml ./data
 
 COPY --from=build $BUILD_PATH/jdk $JAVA_HOME
 COPY --from=build $BUILD_PATH/spring-boot-loader/ ./
