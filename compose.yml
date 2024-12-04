@@ -1,4 +1,37 @@
 services:
+  bot:
+    image: ghcr.io/space27/javabackendspring/bot:master
+    environment:
+      TELEGRAM_API_KEY: ${TELEGRAM_API_KEY}
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+    networks:
+      - backend
+    depends_on:
+      - scrapper
+      - grafana
+
+  scrapper:
+    image: ghcr.io/space27/javabackendspring/scrapper:master
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - backend
+    environment:
+      DATABASE_ACCESS_TYPE: jooq
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - grafana
+
+  files:
+    image: ghcr.io/space27/javabackendspring/scrapper:master
+    volumes:
+      - ./:/opt/mount
+    entrypoint: cp -r /opt/workspace/data/. /opt/mount
+
   postgresql:
     image: postgres:16
     ports:
@@ -16,6 +49,7 @@ services:
     image: liquibase/liquibase:4.25
     depends_on:
       - postgresql
+    restart: on-failure
     command:
       - --changelog-file=master.xml
       - --driver=org.postgresql.Driver
@@ -77,7 +111,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - grafana_storage:/var/lib/grafana
     networks:
@@ -90,7 +124,7 @@ services:
     container_name: prometheus
     hostname: prometheus
     ports:
-      - 9090:9090
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus:/prometheus

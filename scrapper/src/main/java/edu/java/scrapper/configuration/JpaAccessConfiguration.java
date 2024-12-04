@@ -14,9 +14,11 @@ import edu.java.scrapper.service.linkUpdateService.linkUpdater.LinkUpdater;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
+@EnableJpaRepositories("edu.java.scrapper.domain.dao.jpa")
 public class JpaAccessConfiguration {
 
     @Bean
@@ -25,9 +27,7 @@ public class JpaAccessConfiguration {
     }
 
     @Bean
-    public LinkService linkService(
-        JpaTgChatDao jpaTgChatDao, JpaLinkDao jpaLinkDao, JpaChatLinkDao jpaChatLinkDao
-    ) {
+    public LinkService linkService(JpaTgChatDao jpaTgChatDao, JpaLinkDao jpaLinkDao, JpaChatLinkDao jpaChatLinkDao) {
         return new JpaLinkService(jpaChatLinkDao, jpaLinkDao, jpaTgChatDao);
     }
 
